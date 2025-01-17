@@ -47,7 +47,7 @@ export default defineConfig({
       // 如果使用docker-compose开发模式，设置为false
       open: true, //运行后自动打开浏览器
       host: "0.0.0.0",
-      port: 8778, //挂载端口
+      port: 4000, //挂载端口
       allowedHosts: 'all',
       cors:true
     },
