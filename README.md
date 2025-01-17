@@ -1,3 +1,11 @@
+#### 生产环境使用 
+```bash
+pnpm install -g serve
+
+serve -s dist -l 3000
+
+```
+
 # mwj-vue3-template
 
 基于Vue3 + TypeScript/JaveScript + Vite + Pinia + Vue-Router + Element-Plus构建的一款不依赖后端的前端模版
