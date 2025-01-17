@@ -8,7 +8,7 @@
       <div class="login-form">
         <div class="login-logo">
           <img class="login-icon" src="@/assets/images/favicon.ico" alt="" />
-          <h3 class="logo-text">mwj-vue3-template</h3>
+          <h3 class="logo-text">权威管理系统</h3>
         </div>
         <LoginForm />
       </div>
