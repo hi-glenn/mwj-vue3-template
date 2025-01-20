@@ -2,158 +2,57 @@
   <div>
     <div class="table-box">
       <div class="mwj-btn-list">
-        <el-button
-          type="primary"
-          icon="plus"
-          @click="addUser"
-        >新增用户</el-button>
+        <el-button type="primary" icon="plus" @click="addUser">添加域名</el-button>
       </div>
-      <el-table
-        :data="tableData"
-        row-key="ID"
-      >
-        <el-table-column
-          align="left"
-          label="ID"
-          min-width="50"
-          prop="ID"
-        />
-        <el-table-column
-          align="left"
-          label="用户名"
-          min-width="150"
-          prop="userName"
-        />
-        <el-table-column
-          align="left"
-          label="昵称"
-          min-width="150"
-          prop="nickName"
-        />
-        <el-table-column
-          align="left"
-          label="手机号"
-          min-width="180"
-          prop="phone"
-        />
-        <el-table-column
-          align="left"
-          label="邮箱"
-          min-width="180"
-          prop="email"
-        />
-        <el-table-column
-          align="left"
-          label="启用"
-          min-width="150"
-        >
+      <el-table :data="tableData" row-key="ID">
+        <el-table-column align="left" label="ID" min-width="50" prop="ID" />
+        <el-table-column align="left" label="用户名" min-width="150" prop="userName" />
+        <el-table-column align="left" label="昵称" min-width="150" prop="nickName" />
+        <el-table-column align="left" label="手机号" min-width="180" prop="phone" />
+        <el-table-column align="left" label="邮箱" min-width="180" prop="email" />
+        <el-table-column align="left" label="启用" min-width="150">
           <template #default="scope">
-            <el-switch
-              v-model="scope.row.enable"
-              inline-prompt
-              :active-value="1"
-              :inactive-value="2"
-              @change="()=>{switchEnable(scope.row)}"
-            />
+            <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
+              @change="() => { switchEnable(scope.row) }" />
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          min-width="250"
-          fixed="right"
-        >
+        <el-table-column label="操作" min-width="250" fixed="right">
           <template #default="scope">
-            <el-button
-              type="primary"
-              link
-              icon="delete"
-              @click="deleteUserFunc(scope.row)"
-            >删除</el-button>
-            <el-button
-              type="primary"
-              link
-              icon="edit"
-              @click="openEdit(scope.row)"
-            >编辑</el-button>
-            <el-button
-              type="primary"
-              link
-              icon="magic-stick"
-              @click="resetPasswordFunc(scope.row)"
-            >重置密码</el-button>
+            <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
+            <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">编辑</el-button>
+            <el-button type="primary" link icon="magic-stick" @click="resetPasswordFunc(scope.row)">重置密码</el-button>
           </template>
         </el-table-column>
 
       </el-table>
       <div class="el-pagination" style='justify-content: center'>
-        <el-pagination
-          :current-page="page"
-          :page-size="pageSize"
-          :page-sizes="[10, 30, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @current-change="handleCurrentChange"
-          @size-change="handleSizeChange"
-        />
+        <el-pagination :current-page="page" :page-size="pageSize" :page-sizes="[10, 30, 50, 100]" :total="total"
+          layout="total, sizes, prev, pager, next, jumper" @current-change="handleCurrentChange"
+          @size-change="handleSizeChange" />
       </div>
     </div>
-    <el-dialog
-      v-model="addUserDialog"
-      title="用户"
-      :show-close="false"
-      :close-on-press-escape="false"
-      :close-on-click-modal="false"
-    >
+    <el-dialog v-model="addUserDialog" title="用户" :show-close="false" :close-on-press-escape="false"
+      :close-on-click-modal="false">
       <div style="height:60vh;overflow:auto;padding:0 12px;">
-        <el-form
-          ref="userForm"
-          :rules="rules"
-          :model="userInfo"
-          label-width="80px"
-        >
-          <el-form-item
-            v-if="dialogFlag === 'add'"
-            label="用户名"
-            prop="userName"
-          >
+        <el-form ref="userForm" :rules="rules" :model="userInfo" label-width="80px">
+          <el-form-item v-if="dialogFlag === 'add'" label="用户名" prop="userName">
             <el-input v-model="userInfo.userName" />
           </el-form-item>
-          <el-form-item
-            v-if="dialogFlag === 'add'"
-            label="密码"
-            prop="password"
-          >
+          <el-form-item v-if="dialogFlag === 'add'" label="密码" prop="password">
             <el-input v-model="userInfo.password" />
           </el-form-item>
-          <el-form-item
-            label="昵称"
-            prop="nickName"
-          >
+          <el-form-item label="昵称" prop="nickName">
             <el-input v-model="userInfo.nickName" />
           </el-form-item>
-          <el-form-item
-            label="手机号"
-            prop="phone"
-          >
+          <el-form-item label="手机号" prop="phone">
             <el-input v-model="userInfo.phone" />
           </el-form-item>
-          <el-form-item
-            label="邮箱"
-            prop="email"
-          >
+          <el-form-item label="邮箱" prop="email">
             <el-input v-model="userInfo.email" />
           </el-form-item>
-          <el-form-item
-            label="启用"
-            prop="disabled"
-          >
-            <el-switch
-              v-model="userInfo.enable"
-              inline-prompt
-              :active-value="1"
-              :inactive-value="2"
-            />
+          <el-form-item label="启用" prop="disabled">
+            <el-switch v-model="userInfo.enable" inline-prompt :active-value="1" :inactive-value="2" />
           </el-form-item>
         </el-form>
 
@@ -162,10 +61,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="closeAddUserDialog">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="enterAddUserDialog"
-          >确 定</el-button>
+          <el-button type="primary" @click="enterAddUserDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -199,7 +95,7 @@ const handleCurrentChange = (val) => {
 }
 
 // 查询
-const getTableData = async() => {
+const getTableData = async () => {
   const table = await getTableUserList({ page: page.value, pageSize: pageSize.value })
   if (table.code === 0) {
     tableData.value = table.data.list
@@ -209,7 +105,7 @@ const getTableData = async() => {
   }
 }
 
-const initPage = async() => {
+const initPage = async () => {
   await getTableData()
 }
 
@@ -224,22 +120,22 @@ const resetPasswordFunc = (row) => {
       cancelButtonText: '取消',
       type: 'warning',
     }
-  ).then(async() => {
-      ElMessage({
-        type: 'success',
-        message: "重置密码成功",
-      })
+  ).then(async () => {
+    ElMessage({
+      type: 'success',
+      message: "重置密码成功",
+    })
   })
 }
 
-const deleteUserFunc = async(row) => {
+const deleteUserFunc = async (row) => {
   ElMessageBox.confirm('确定要删除吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-      ElMessage.success('删除成功')
-      await getTableData()
+    ElMessage.success('删除成功')
+    await getTableData()
   })
 }
 
@@ -271,7 +167,7 @@ const rules = ref({
   ],
 })
 const userForm = ref(null)
-const enterAddUserDialog = async() => {
+const enterAddUserDialog = async () => {
   userForm.value.validate(async valid => {
     if (valid) {
       const req = {
@@ -316,14 +212,13 @@ const openEdit = (row) => {
   addUserDialog.value = true
 }
 
-const switchEnable = async(row) => {
+const switchEnable = async (row) => {
   userInfo.value = JSON.parse(JSON.stringify(row))
   await nextTick()
   const req = {
     ...userInfo.value
   }
-    ElMessage({ type: 'success', message: `${req.enable === 2 ? '禁用' : '启用'}成功` })
+  ElMessage({ type: 'success', message: `${req.enable === 2 ? '禁用' : '启用'}成功` })
 }
 
 </script>
-
