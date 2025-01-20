@@ -16,34 +16,18 @@
       }
     },
     {
-      "path": "/authManage",
-      "name": "authManage",
-      "redirect": "/authManage/zones",
+      "path": "/dataScreen",
+      "name": "dataScreen",
+      "component": "/dataScreen/index",
       "meta": {
-        "icon": "Coordinate",
-        "title": "权威管理",
+        "icon": "Histogram",
+        "title": "数据大屏",
         "isLink": "",
         "isHide": false,
-        "isFull": false,
+        "isFull": true,
         "isAffix": false,
         "isKeepAlive": true
-      },
-      "children": [
-        {
-          "path": "/authManage/zones",
-          "name": "zones",
-          "component": "/authManage/zones/index",
-          "meta": {
-            "icon": "Mug",
-            "title": "域名管理",
-            "isLink": "",
-            "isHide": false,
-            "isFull": false,
-            "isAffix": false,
-            "isKeepAlive": true
-          }
-        }
-      ]
+      }
     },
     {
       "path": "/auth",
@@ -103,6 +87,7 @@
         "isKeepAlive": true
       },
       "children": [
+
         {
           "path": "/assembly/tabs",
           "name": "tabs",

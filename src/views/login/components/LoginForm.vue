@@ -82,7 +82,7 @@ const login = (formEl) => {
       router.push(HOME_URL);
       ElNotification({
         title: getTimeState(),
-        message: "欢迎登录 mwj-vue3-template",
+        message: "欢迎登录 权威管理系统",
         type: "success",
         duration: 3000
       });
