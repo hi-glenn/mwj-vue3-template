@@ -2,7 +2,7 @@
   <div>
     <div class="table-box">
       <div class="mwj-btn-list">
-        <el-button type="primary" icon="plus" @click="addUser">添加域名</el-button>
+        <el-button type="primary" icon="plus" @click="addUser">添加记录</el-button>
       </div>
       <el-table :data="tableData" row-key="ID">
         <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
@@ -11,8 +11,13 @@
         <!-- <el-table-column align="left" label="手机号" min-width="180" prop="phone" /> -->
         <!-- <el-table-column align="left" label="邮箱" min-width="180" prop="email" /> -->
 
-        <el-table-column align="left" label="域名" min-width="200" prop="zone" />
-        <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" />
+        <el-table-column align="left" label="主机记录" min-width="200" prop="host" />
+        <el-table-column align="left" label="记录类型" min-width="200" prop="r_typ" />
+        <el-table-column align="left" label="vid" min-width="200" prop="vid" />
+        <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" />
+
+        <!-- <el-table-column align="left" label="域名" min-width="200" prop="zone" /> -->
+        <!-- <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" /> -->
 
         <!-- <el-table-column align="left" label="启用" min-width="150">
           <template #default="scope">
@@ -76,13 +81,13 @@
 
 import { getTableUserList } from '@/api/modules/user'
 
-import { getZoneList } from '@/api/modules/zone'
+import { getHostList } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 defineOptions({
-  name: 'User',
+  name: 'Host',
 })
 
 const page = ref(1)
@@ -92,31 +97,42 @@ const tableData = ref([])
 // 分页
 const handleSizeChange = (val) => {
   pageSize.value = val
-  getTableData()
+
+  // console.log("handleSizeChange: size: ", val, " no:",page.value);
+
+  getTableData(route.params.zone, val, page.value)
 }
 
 const handleCurrentChange = (val) => {
-  page.value = val
-  getTableData()
+  page.value = val;
+
+  // console.log("handleCurrentChange: ", val);
+
+  getTableData(route.params.zone, pageSize.value, val);
 }
 
 // 查询
-const getTableData = async () => {
+const getTableData = async (zone, page_size, page_no) => {
 
-  let ret = await getZoneList({ page_no: 1, page_size: 10 });
+  let ret = await getHostList({ zone: zone, page_no: page_no, page_size: page_size });
 
-  console.log("ret: ", ret);
+  // console.log("ret: ", ret);
 
   if (ret.errcode == 0) {
-    tableData.value = ret.data.zones;
+    tableData.value = ret.data.records;
     total.value = ret.data.total;
-    page.value = 1// table.data.page;
-    pageSize.value = 10; // table.data.pageSize;
+    page.value = page_no; // table.data.page;
+    pageSize.value = page_size; // table.data.pageSize;
   }
 }
 
+// const router = useRouter();
+const route = useRoute();
+
 const initPage = async () => {
-  await getTableData()
+  // console.log("pageSize.value: ", pageSize.value);
+
+  await getTableData(route.params.zone, pageSize.value, 1)
 }
 
 initPage()
@@ -226,7 +242,6 @@ const addUser = () => {
   console.log(t3);
 }
 
-const router = useRouter();
 
 const openEdit = (row) => {
   dialogFlag.value = 'edit';
@@ -236,8 +251,6 @@ const openEdit = (row) => {
   let ret = JSON.parse(JSON.stringify(row));
 
   console.log("ret: ", ret);
-
-  router.push(`/authManage/zones/${ret.zone}/host`);
 }
 
 const switchEnable = async (row) => {

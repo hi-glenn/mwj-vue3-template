@@ -41,7 +41,22 @@
             "isFull": false,
             "isAffix": false,
             "isKeepAlive": true
-          }
+          },
+          "children": [
+            {
+              "path": "/authManage/zones/:zone/host",
+              "name": "host",
+              "component": "/authManage/hosts/index",
+              "meta": {
+                "icon": "Mug",
+                "title": "记录管理",
+                "isHide": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true
+              }
+            }
+          ]
         }
       ]
     },
