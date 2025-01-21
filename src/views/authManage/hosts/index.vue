@@ -3,7 +3,7 @@
     <div class="table-box">
       <div class="mwj-btn-list">
         <el-button type="primary" icon="plus" @click="addUser">添加记录</el-button>
-        <el-button type="primary" @click="testDrawer">Open Drawer</el-button>
+
       </div>
       <el-table :data="tableData" row-key="ID">
         <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
@@ -25,12 +25,13 @@
             <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
               @change="() => { switchEnable(scope.row) }" />
           </template>
-        </el-table-column> -->
+</el-table-column> -->
 
         <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
+            <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">管理</el-button>
             <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
-            <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">编辑</el-button>
+            
             <!-- <el-button type="primary" style="margin-left: 16px" @click="drawer2 = true">with footer</el-button> -->
 
 
@@ -78,37 +79,30 @@
       </template>
     </el-dialog>
 
-    <!-- <el-drawer v-model="drawer2" :direction="rtl" :visible="visible">
-      <template #header>
-        <h4>set title by slot</h4>
-      </template>
-      <template #default>
-        <div>
-          <el-radio v-model="radio1" value="Option 1" size="large">
-            Option 1
-          </el-radio>
-          <el-radio v-model="radio1" value="Option 2" size="large">
-            Option 2
-          </el-radio>
-        </div>
-      </template>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelClick">cancel</el-button>
-          <el-button type="primary" @click="confirmClick">confirm</el-button>
-        </div>
-      </template>
-    </el-drawer> -->
+    <div>
+      <el-drawer v-model="open" :direction="rtl">
+        <template #header>
+          <h4>查看记录</h4>
+        </template>
+        <template #default>
+          <div>
+            <el-radio v-model="radio1" value="Option 1" size="large">
+              Option 1
+            </el-radio>
+            <el-radio v-model="radio1" value="Option 2" size="large">
+              Option 2
+            </el-radio>
+          </div>
+        </template>
+        <template #footer>
+          <div style="flex: auto">
+            <el-button @click="cancelClick">cancel</el-button>
+            <el-button type="primary" @click="confirmClick">confirm</el-button>
+          </div>
+        </template>
+      </el-drawer>
+    </div>
 
-
-    <template>
-      <div>
-        <el-drawer title="Drawer Title" :visible="visible" :before-close="handleClose" width="400px">
-          <p>This is the content inside the drawer.</p>
-        </el-drawer>
-      </div>
-    </template>
-    
   </div>
 
 
@@ -128,28 +122,9 @@ defineOptions({
   name: 'Host',
 })
 
-let visible = ref(false)
+const open = ref(false)
 const handleClose = () => {
-  visible.value = false;
-};
-
-const testDrawer = () => {
-  console.log("test drawer");
-  visible = true;
-
-  // dialogFlag.value = 'add';
-  // addUserDialog.value = true;
-
-  // console.log("add user()");
-
-  // let t1 = import.meta.env.VITE_GLOB_APP_TITLE;
-  // console.log(t1);
-
-  // let t2 = import.meta.env.VITE_BASE_PATH;
-  // console.log(t2);
-
-  // let t3 = import.meta.env.VITE_API_URL;
-  // console.log(t3);
+  open.value = false;
 };
 
 // const drawer2 = ref(false)
@@ -318,6 +293,9 @@ const openEdit = (row) => {
   let ret = JSON.parse(JSON.stringify(row));
 
   console.log("ret: ", ret);
+
+  console.log("open drawer");
+  open.value = true
 }
 
 const switchEnable = async (row) => {
