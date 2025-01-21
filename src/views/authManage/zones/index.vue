@@ -5,23 +5,27 @@
         <el-button type="primary" icon="plus" @click="addUser">添加域名</el-button>
       </div>
       <el-table :data="tableData" row-key="ID">
-        <el-table-column align="left" label="ID" min-width="50" prop="ID" />
-        <el-table-column align="left" label="用户名" min-width="150" prop="userName" />
-        <el-table-column align="left" label="昵称" min-width="150" prop="nickName" />
-        <el-table-column align="left" label="手机号" min-width="180" prop="phone" />
-        <el-table-column align="left" label="邮箱" min-width="180" prop="email" />
-        <el-table-column align="left" label="启用" min-width="150">
+        <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
+        <!-- <el-table-column align="left" label="用户名" min-width="150" prop="userName" /> -->
+        <!-- <el-table-column align="left" label="昵称" min-width="150" prop="nickName" /> -->
+        <!-- <el-table-column align="left" label="手机号" min-width="180" prop="phone" /> -->
+        <!-- <el-table-column align="left" label="邮箱" min-width="180" prop="email" /> -->
+
+        <el-table-column align="left" label="域名" min-width="200" prop="zone" />
+        <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" />
+
+        <!-- <el-table-column align="left" label="启用" min-width="150">
           <template #default="scope">
             <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
               @change="() => { switchEnable(scope.row) }" />
           </template>
-        </el-table-column>
+        </el-table-column> -->
 
-        <el-table-column label="操作" min-width="250" fixed="right">
+        <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
             <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
             <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">编辑</el-button>
-            <el-button type="primary" link icon="magic-stick" @click="resetPasswordFunc(scope.row)">重置密码</el-button>
+            <!-- <el-button type="primary" link icon="magic-stick" @click="resetPasswordFunc(scope.row)">重置密码</el-button> -->
           </template>
         </el-table-column>
 
@@ -72,6 +76,8 @@
 
 import { getTableUserList } from '@/api/modules/user'
 
+import { getZoneList } from '@/api/modules/zone'
+
 import { nextTick, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -96,12 +102,16 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async () => {
-  const table = await getTableUserList({ page: page.value, pageSize: pageSize.value })
-  if (table.code === 0) {
-    tableData.value = table.data.list
-    total.value = table.data.total
-    page.value = table.data.page
-    pageSize.value = table.data.pageSize
+
+  let ret = await getZoneList({page_no: 1, page_size: 10});
+
+  console.log("ret: ", ret);
+
+  if (ret.errcode == 0) {
+    tableData.value = ret.data.zones;
+    total.value = ret.data.total;
+    page.value = 1// table.data.page;
+    pageSize.value = 10; // table.data.pageSize;
   }
 }
 
@@ -201,15 +211,30 @@ const closeAddUserDialog = () => {
 const dialogFlag = ref('add')
 
 const addUser = () => {
-  dialogFlag.value = 'add'
-  addUserDialog.value = true
+  dialogFlag.value = 'add';
+  addUserDialog.value = true;
+
+  console.log("add user()");
+
+  let t1 = import.meta.env.VITE_GLOB_APP_TITLE;
+  console.log(t1);
+
+  let t2 = import.meta.env.VITE_BASE_PATH;
+  console.log(t2);
+
+  let t3 = import.meta.env.VITE_API_URL;
+  console.log(t3);
 }
 
 
 const openEdit = (row) => {
-  dialogFlag.value = 'edit'
-  userInfo.value = JSON.parse(JSON.stringify(row))
-  addUserDialog.value = true
+  dialogFlag.value = 'edit';
+  // userInfo.value = JSON.parse(JSON.stringify(row))
+  // addUserDialog.value = true
+
+  let ret = JSON.parse(JSON.stringify(row));
+
+  console.log("ret: ", ret);
 }
 
 const switchEnable = async (row) => {
