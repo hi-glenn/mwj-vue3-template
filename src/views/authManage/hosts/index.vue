@@ -91,8 +91,10 @@
             <h5 class="title">基本信息</h5>
             <el-descriptions :column="1" border size="default">
               <el-descriptions-item label="域名" label-align="left" width="20px">
-                <el-tag class="wrap-tag3">baidu.com</el-tag>
-                <!-- <el-tag>{{ version }}</el-tag> -->
+                <el-tag class="wrap-tag">baidu.com</el-tag>
+
+                <!-- <el-tag
+                  class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
 
               </el-descriptions-item>
               <el-descriptions-item label="记录类型" label-align="left">
@@ -111,7 +113,7 @@
 
             </el-descriptions>
           </div>
-<!--  -->
+          <!--  -->
 
           <div class="card mb10">
             <h5 class="title">记录值</h5>
@@ -394,27 +396,11 @@ const switchEnable = async (row) => {
 <style scoped>
 .wrap-tag {
   white-space: normal;
-  /* 允许文本换行 */
-  word-wrap: break-word;
-  /* 长单词换行 */
-  word-break: break-word;
-  /* 长单词强制换行 */
-  /* 控制最大宽度，防止 tag 过宽 */
-
-}
-
-.wrap-tag2 {
-  white-space: normal;
-  height: auto;
-}
-
-.wrap-tag3 {
-  white-space: normal;
   height: auto;
   padding: 8px;
   display: inline-block;
-  min-height: 30px;
-  line-height: 20px;
+  min-height: 35px;
+  line-height: 18px;
   word-wrap: break-word;
   word-break: break-word;
 }
