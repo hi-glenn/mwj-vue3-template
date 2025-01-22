@@ -83,12 +83,22 @@
       <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose"
         size="750">
         <template #header>
-          <h4>查看记录</h4>
+          <div class="drawer-header-box">
+            <div>
+              <h4>查看记录</h4>
+            </div>
+            <div>
+              <el-button class="custom-btn" type="warning" icon="EditPen" @click="test_btn">编辑</el-button>
+            </div>
+
+          </div>
+
         </template>
         <template #default>
 
           <div class="card mb10">
             <h5 class="title">基本信息</h5>
+
             <el-descriptions :column="1" border size="default">
               <el-descriptions-item label="域名" label-align="left" width="20px">
                 <el-tag class="wrap-tag">baidu.com</el-tag>
@@ -102,14 +112,12 @@
                 <el-tag>A</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
-                <el-link type="primary" href="https://gitee.com/xiaozai-van-liu/mwj-vue3-template" target="_blank">
-                  Gitee </el-link>
-              </el-descriptions-item>
-              <el-descriptions-item label="线路类型" label-align="left">
-                <el-link type="primary" href="https://github.com/Lvan826199/mwj-vue3-template" target="_blank"> Github
-                </el-link>
+                <el-tag>Default</el-tag>
               </el-descriptions-item>
 
+              <el-descriptions-item label="负载均衡" label-align="left">
+                <el-tag>已开启</el-tag>
+              </el-descriptions-item>
 
             </el-descriptions>
           </div>
@@ -117,7 +125,55 @@
 
           <div class="card mb10">
             <h5 class="title">记录值</h5>
-            <el-descriptions :column="3" border>
+            <el-descriptions :column="2" border>
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+
               <el-descriptions-item label="线路">
                 <el-tag type="info">
                   hello
@@ -149,11 +205,18 @@ import { getHostList, getRrset } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
 import { ElMessage, ElMessageBox, ElDrawer } from 'element-plus'
-// import { el-drawer } from 'element-plus'
+
+// import { CirclePlus, Delete, EditPen, Download, Upload } from "@element-plus/icons-vue";
 
 defineOptions({
   name: 'Host',
 })
+
+
+const test_btn = () => {
+  console.log("test_btn");
+}
+
 
 const drawer_rrset = ref(false)
 
@@ -344,8 +407,6 @@ const closeAddUserDialog = () => {
 
 const dialogFlag = ref('add')
 
-
-
 const addUser = () => {
   dialogFlag.value = 'add';
   addUserDialog.value = true;
@@ -404,4 +465,53 @@ const switchEnable = async (row) => {
   word-wrap: break-word;
   word-break: break-word;
 }
+
+.drawer-header-box {
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin: 0; */
+  /* padding: 10px; */
+  /* list-style: none; */
+  /* background-color: #eee; */
+}
+.custom-btn {
+ font-size: 14px;
+ color: aliceblue;
+}
+</style>
+
+<style lang="scss" scoped>
+.card {
+  .title {
+    margin: 0 0 15px;
+    // font-size: 17px;
+    font-weight: bold;
+    color: var(--el-text-color-primary);
+  }
+
+  // .text {
+  //   font-size: 15px;
+  //   line-height: 25px;
+  //   color: var(--el-text-color-regular);
+  //   .el-link {
+  //     font-size: 15px;
+  //   }
+  // }
+}
+</style>
+
+
+<style scoped>
+	:deep(.el-drawer__header){
+		background-color: rgb(245,245,245);
+		padding:0px 20px;
+		height: 50px;
+		color: #000000;
+		margin-bottom: 0px;
+	}
+	:deep(.el-drawer__title){
+		font-size: 20px;
+	}
 </style>
