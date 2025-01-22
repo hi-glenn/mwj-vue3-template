@@ -80,19 +80,50 @@
     </el-dialog>
 
     <div>
-      <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose" size="750">
+      <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose"
+        size="750">
         <template #header>
           <h4>查看记录</h4>
         </template>
         <template #default>
-          <div>
-            <el-radio value="Option 1" size="large">
-              Option 1
-            </el-radio>
-            <el-radio value="Option 2" size="large">
-              Option 2
-            </el-radio>
+
+          <div class="card mb10">
+            <h5 class="title">基本信息</h5>
+            <el-descriptions :column="1" border size="default">
+              <el-descriptions-item label="域名" label-align="left" width="20px">
+                <el-tag class="wrap-tag3">baidu.com</el-tag>
+                <!-- <el-tag>{{ version }}</el-tag> -->
+
+              </el-descriptions-item>
+              <el-descriptions-item label="记录类型" label-align="left">
+                <!-- <el-tag>{{ lastBuildTime }}</el-tag> -->
+                <el-tag>A</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="线路" label-align="left">
+                <el-link type="primary" href="https://gitee.com/xiaozai-van-liu/mwj-vue3-template" target="_blank">
+                  Gitee </el-link>
+              </el-descriptions-item>
+              <el-descriptions-item label="线路类型" label-align="left">
+                <el-link type="primary" href="https://github.com/Lvan826199/mwj-vue3-template" target="_blank"> Github
+                </el-link>
+              </el-descriptions-item>
+
+
+            </el-descriptions>
           </div>
+<!--  -->
+
+          <div class="card mb10">
+            <h5 class="title">记录值</h5>
+            <el-descriptions :column="3" border>
+              <el-descriptions-item label="线路">
+                <el-tag type="info">
+                  hello
+                </el-tag>
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+
         </template>
         <template #footer>
           <div style="flex: auto">
@@ -358,3 +389,33 @@ const switchEnable = async (row) => {
 }
 
 </script>
+
+
+<style scoped>
+.wrap-tag {
+  white-space: normal;
+  /* 允许文本换行 */
+  word-wrap: break-word;
+  /* 长单词换行 */
+  word-break: break-word;
+  /* 长单词强制换行 */
+  /* 控制最大宽度，防止 tag 过宽 */
+
+}
+
+.wrap-tag2 {
+  white-space: normal;
+  height: auto;
+}
+
+.wrap-tag3 {
+  white-space: normal;
+  height: auto;
+  padding: 8px;
+  display: inline-block;
+  min-height: 30px;
+  line-height: 20px;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+</style>
