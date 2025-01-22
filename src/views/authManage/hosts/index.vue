@@ -31,7 +31,7 @@
           <template #default="scope">
             <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">管理</el-button>
             <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
-            
+
             <!-- <el-button type="primary" style="margin-left: 16px" @click="drawer2 = true">with footer</el-button> -->
 
 
@@ -80,16 +80,16 @@
     </el-dialog>
 
     <div>
-      <el-drawer v-model="open" :direction="rtl">
+      <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose" size="750">
         <template #header>
           <h4>查看记录</h4>
         </template>
         <template #default>
           <div>
-            <el-radio v-model="radio1" value="Option 1" size="large">
+            <el-radio value="Option 1" size="large">
               Option 1
             </el-radio>
-            <el-radio v-model="radio1" value="Option 2" size="large">
+            <el-radio value="Option 2" size="large">
               Option 2
             </el-radio>
           </div>
@@ -112,7 +112,7 @@
 
 import { getTableUserList } from '@/api/modules/user'
 
-import { getHostList } from '@/api/modules/host'
+import { getHostList, getRrset } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
 import { ElMessage, ElMessageBox, ElDrawer } from 'element-plus'
@@ -122,10 +122,41 @@ defineOptions({
   name: 'Host',
 })
 
-const open = ref(false)
+const drawer_rrset = ref(false)
+
 const handleClose = () => {
-  open.value = false;
+  drawer_rrset.value = false;
 };
+
+const open_drawer_rrset = () => {
+  console.log("open_drawer_rrset");
+};
+
+// const handleClose = () => {
+//   ElMessageBox.confirm('Are you sure you want to close this?')
+//     .then(() => {
+//       done()
+//     })
+//     .catch(() => {
+//       // catch error
+//     })
+// }
+
+function cancelClick() {
+  drawer_rrset.value = false
+}
+
+function confirmClick() {
+  ElMessageBox.confirm(`Are you confirm to chose ?`)
+    .then(() => {
+      drawer_rrset.value = false
+    })
+    .catch(() => {
+      // catch error
+    })
+}
+
+// -----------------------------
 
 // const drawer2 = ref(false)
 // const direction = ref<DrawerProps['direction']>('rtl')
@@ -134,29 +165,25 @@ const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
+
 // 分页
 const handleSizeChange = (val) => {
   pageSize.value = val
 
-  // console.log("handleSizeChange: size: ", val, " no:",page.value);
-
-  getTableData(route.params.zone, val, page.value)
+  bindHostData(route.params.zone, val, page.value)
 }
 
+// 当前页
 const handleCurrentChange = (val) => {
   page.value = val;
 
-  // console.log("handleCurrentChange: ", val);
-
-  getTableData(route.params.zone, pageSize.value, val);
+  bindHostData(route.params.zone, pageSize.value, val);
 }
 
-// 查询
-const getTableData = async (zone, page_size, page_no) => {
+// 查询 host 列表
+const bindHostData = async (zone, page_size, page_no) => {
 
   let ret = await getHostList({ zone: zone, page_no: page_no, page_size: page_size });
-
-  // console.log("ret: ", ret);
 
   if (ret.errcode == 0) {
     tableData.value = ret.data.records;
@@ -166,13 +193,31 @@ const getTableData = async (zone, page_size, page_no) => {
   }
 }
 
+// ---------
+
+const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
+
+  // /api/v1/name/zone/ooxx.website/host/1/data?r_typ=A&vid=1&v_typ=1
+  let ret = await getRrset({ zone: zone, host: host, r_typ: r_typ, vid: vid, v_typ: v_typ });
+
+  console.log("getRrset ret: ", ret);
+
+  if (ret.errcode == 0) {
+    // tableData.value = ret.data.records;
+    // total.value = ret.data.total;
+    // page.value = page_no; // table.data.page;
+    // pageSize.value = page_size; // table.data.pageSize;
+  }
+}
+
+
 // const router = useRouter();
 const route = useRoute();
 
 const initPage = async () => {
   // console.log("pageSize.value: ", pageSize.value);
 
-  await getTableData(route.params.zone, pageSize.value, 1)
+  await bindHostData(route.params.zone, pageSize.value, 1)
 }
 
 initPage()
@@ -201,7 +246,7 @@ const deleteUserFunc = async (row) => {
     type: 'warning'
   }).then(async () => {
     ElMessage.success('删除成功')
-    await getTableData()
+    await bindHostData()
   })
 }
 
@@ -243,14 +288,14 @@ const enterAddUserDialog = async () => {
         const res = await register(req)
         if (res.code === 0) {
           ElMessage({ type: 'success', message: '创建成功' })
-          await getTableData()
+          await bindHostData()
           closeAddUserDialog()
         }
       }
       if (dialogFlag.value === 'edit') {
         if (res.code === 0) {
           ElMessage({ type: 'success', message: '编辑成功' })
-          await getTableData()
+          await bindHostData()
           closeAddUserDialog()
         }
       }
@@ -295,7 +340,12 @@ const openEdit = (row) => {
   console.log("ret: ", ret);
 
   console.log("open drawer");
-  open.value = true
+
+  // (zone, host, r_typ, vid, v_typ)
+
+  bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
+
+  drawer_rrset.value = true;
 }
 
 const switchEnable = async (row) => {
