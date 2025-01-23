@@ -5,7 +5,7 @@
         <el-button type="primary" icon="plus" @click="addUser">添加记录</el-button>
 
       </div>
-      <el-table :data="tableData" row-key="ID">
+      <el-table :data="hostList" row-key="ID">
         <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
         <!-- <el-table-column align="left" label="用户名" min-width="150" prop="userName" /> -->
         <!-- <el-table-column align="left" label="昵称" min-width="150" prop="nickName" /> -->
@@ -80,8 +80,8 @@
     </el-dialog>
 
     <div>
-      <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose"
-        size="750">
+      <!-- :open="open_drawer_rrset" -->
+      <el-drawer v-model="drawer_rrset" direction="rtl" :before-close="handleClose" size="750" destroy-on-close>
         <template #header>
           <h4>配置记录</h4>
 
@@ -93,22 +93,21 @@
 
             <el-descriptions :column="1" border size="default">
               <el-descriptions-item label="域名" label-align="left" width="20px">
-                <el-tag class="wrap-tag">baidu.com</el-tag>
+                <el-tag class="wrap-tag">{{ _host }}.{{ _zone }}</el-tag>
 
                 <!-- <el-tag
                   class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
 
               </el-descriptions-item>
               <el-descriptions-item label="记录类型" label-align="left">
-                <!-- <el-tag>{{ lastBuildTime }}</el-tag> -->
-                <el-tag>A</el-tag>
+                <el-tag>{{ _r_typ }}</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
-                <el-tag>Default</el-tag>
+                <el-tag>{{ _view }}</el-tag>
               </el-descriptions-item>
 
               <el-descriptions-item label="负载均衡" label-align="left">
-                <el-tag>已开启</el-tag>
+                <el-tag>{{ _lb }}</el-tag>
               </el-descriptions-item>
 
             </el-descriptions>
@@ -116,68 +115,45 @@
           <!--  -->
 
           <div class="card mb10">
-            <h5 class="title">记录值</h5>
-            <el-descriptions :column="2" border>
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+            <h5 class="title">记录信息</h5>
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+            <el-table :data="rrSet" row-key="ID2">
+              <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
+              <!-- <el-table-column align="left" label="用户名" min-width="150" prop="userName" /> -->
+              <!-- <el-table-column align="left" label="昵称" min-width="150" prop="nickName" /> -->
+              <!-- <el-table-column align="left" label="手机号" min-width="180" prop="phone" /> -->
+              <!-- <el-table-column align="left" label="邮箱" min-width="180" prop="email" /> -->
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+              <el-table-column align="left" label="记录值" min-width="200" prop="data" />
+              <el-table-column align="left" label="权重" min-width="40" prop="wt" />
+              <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
+              <el-table-column align="left" label="状态" min-width="40" prop="stat" />
+              <!-- <el-table-column align="left" label="vid" min-width="200" prop="vid" />
+              <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" /> -->
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+              <!-- <el-table-column align="left" label="域名" min-width="200" prop="zone" /> -->
+              <!-- <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" /> -->
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+              <!-- <el-table-column align="left" label="启用" min-width="150">
+          <template #default="scope">
+            <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
+              @change="() => { switchEnable(scope.row) }" />
+          </template>
+    </el-table-column> -->
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
+              <el-table-column label="操作" min-width="80" fixed="right">
+                <template #default="scope">
+                  <el-button type="danger" link icon="delete" @click="deleteUserFunc(scope.row)"></el-button>
+                </template>
+              </el-table-column>
 
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
-
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
-
-              <el-descriptions-item label="线路">
-                <el-tag type="info">
-                  hello
-                </el-tag>
-              </el-descriptions-item>
-            </el-descriptions>
+            </el-table>
           </div>
 
         </template>
         <template #footer>
           <div style="flex: auto">
-            <el-button type="warning" @click="test_btn" plain>配置</el-button>
+            <el-button type="warning" @click="configRrSet" plain>配置</el-button>
             <el-button @click="cancelClick" plain>取消</el-button>
             <el-button type="primary" @click="confirmClick" plain>提交</el-button>
           </div>
@@ -206,20 +182,22 @@ defineOptions({
 })
 
 
-const test_btn = () => {
-  console.log("test_btn");
-}
+const configRrSet = () => {
+  console.log("configRrSet");
+};
 
 
 const drawer_rrset = ref(false)
+
+const rrSet = ref([]);
 
 const handleClose = () => {
   drawer_rrset.value = false;
 };
 
-const open_drawer_rrset = () => {
-  console.log("open_drawer_rrset");
-};
+// const open_drawer_rrset = () => {
+//   console.log("open_drawer_rrset");
+// };
 
 // const handleClose = () => {
 //   ElMessageBox.confirm('Are you sure you want to close this?')
@@ -253,7 +231,7 @@ function confirmClick() {
 const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
-const tableData = ref([])
+const hostList = ref([])
 
 // 分页
 const handleSizeChange = (val) => {
@@ -275,7 +253,7 @@ const bindHostData = async (zone, page_size, page_no) => {
   let ret = await getHostList({ zone: zone, page_no: page_no, page_size: page_size });
 
   if (ret.errcode == 0) {
-    tableData.value = ret.data.records;
+    hostList.value = ret.data.records;
     total.value = ret.data.total;
     page.value = page_no; // table.data.page;
     pageSize.value = page_size; // table.data.pageSize;
@@ -283,6 +261,12 @@ const bindHostData = async (zone, page_size, page_no) => {
 }
 
 // ---------
+const _r_typ = ref('');
+const _host = ref('');
+const _zone = ref('');
+
+const _view = ref('');
+const _lb = ref('');
 
 const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
 
@@ -292,10 +276,17 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
   console.log("getRrset ret: ", ret);
 
   if (ret.errcode == 0) {
-    // tableData.value = ret.data.records;
-    // total.value = ret.data.total;
-    // page.value = page_no; // table.data.page;
-    // pageSize.value = page_size; // table.data.pageSize;
+    if (ret.data.rrs.length > 0) {
+
+      _r_typ.value = ret.data.rrs[0].r_typ;
+      _lb.value = ret.data.rrs[0].lb;
+
+      _host.value = host;
+      _zone.value = zone;
+      _view.value = vid;
+    }
+
+    rrSet.value = ret.data.rrs;
   }
 }
 
@@ -424,15 +415,11 @@ const openEdit = (row) => {
 
   let ret = JSON.parse(JSON.stringify(row));
 
-  console.log("ret: ", ret);
-
   console.log("open drawer");
 
-  // (zone, host, r_typ, vid, v_typ)
+  drawer_rrset.value = true;
 
   bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
-
-  drawer_rrset.value = true;
 }
 
 const switchEnable = async (row) => {
@@ -469,6 +456,7 @@ const switchEnable = async (row) => {
   /* list-style: none; */
   /* background-color: #eee; */
 }
+
 /* .custom-btn {
  font-size: 14px;
  color: aliceblue;
@@ -497,14 +485,15 @@ const switchEnable = async (row) => {
 
 
 <style scoped>
-	:deep(.el-drawer__header){
-		background-color: rgb(245,245,245);
-		padding:0px 20px;
-		height: 50px;
-		/* color: #000000; */
-		margin-bottom: 0px;
-	}
-	:deep(.el-drawer__title){
-		font-size: 20px;
-	}
+:deep(.el-drawer__header) {
+  background-color: rgb(245, 245, 245);
+  padding: 0px 20px;
+  height: 50px;
+  /* color: #000000; */
+  margin-bottom: 0px;
+}
+
+:deep(.el-drawer__title) {
+  font-size: 20px;
+}
 </style>

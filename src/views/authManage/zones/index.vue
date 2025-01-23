@@ -23,9 +23,9 @@
 
         <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
-            <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
             <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">编辑</el-button>
-            <!-- <el-button type="primary" link icon="magic-stick" @click="resetPasswordFunc(scope.row)">重置密码</el-button> -->
+            <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
+
           </template>
         </el-table-column>
 
