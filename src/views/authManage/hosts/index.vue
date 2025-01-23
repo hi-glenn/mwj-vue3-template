@@ -88,16 +88,15 @@
         </template>
         <template #default>
 
-          <div class="card mb10">
+          <!-- readonly -->
+          <div class="card mb10" v-if="displayReadlyOnlyStat">
             <h5 class="title">基本信息</h5>
-
+            <!-- class-name="color_label" -->
             <el-descriptions :column="1" border size="default">
-              <el-descriptions-item label="域名" label-align="left" width="20px">
+              <el-descriptions-item label="域名" label-align="left" label-class-name="host-custom-label">
                 <el-tag class="wrap-tag">{{ _host }}.{{ _zone }}</el-tag>
-
                 <!-- <el-tag
                   class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
-
               </el-descriptions-item>
               <el-descriptions-item label="记录类型" label-align="left">
                 <el-tag>{{ _r_typ }}</el-tag>
@@ -112,22 +111,78 @@
 
             </el-descriptions>
           </div>
-          <!--  -->
 
-          <div class="card mb10">
+          <!-- writable -->
+          <div class="card mb10" v-if="!displayReadlyOnlyStat">
+            <h5 class="title">基本信息</h5>
+            <el-descriptions :column="1" border size="default">
+              <el-descriptions-item label="域名" label-align="left" label-class-name="host-custom-label">
+                <!-- <el-tag class="wrap-tag">{{ _host }}.{{ _zone }}</el-tag> -->
+
+
+                <div class="mt-4">
+                  <el-input v-model="_host_input" style="max-width: 600px" placeholder="Please input">
+                    <template #append>.{{ _zone }}</template>
+                  </el-input>
+
+                  <!-- <div class="host-box"></div>
+                  <el-input v-model="_host_input" style="max-width: 400px" placeholder="Please input" autosize
+                    type="textarea">
+                  </el-input>
+                  <div style="padding-left: 10px;">
+                    <el-tag>.{{ _zone }}</el-tag>
+                  </div> -->
+
+                </div>
+
+                <!-- <el-tag
+                  class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
+              </el-descriptions-item>
+              <el-descriptions-item label="记录类型" label-align="left">
+                <!-- <el-tag>{{ _r_typ }}</el-tag> -->
+
+                <div class="mt-4">
+                  <el-select v-model="_r_typ_select" placeholder="Select" style="max-width: 600px">
+                    <el-option label="A" value="A" />
+                    <el-option label="AAAA" value="AAAA" />
+                    <el-option label="CNAME" value="CNAME" />
+                  </el-select>
+                </div>
+
+              </el-descriptions-item>
+              <el-descriptions-item label="线路" label-align="left">
+                <!-- <el-tag>{{ _view }}</el-tag> -->
+                <el-select v-model="_view_val" placeholder="Select" filterable style="max-width: 600px">
+                  <el-option-group v-for="group in _view_options" :key="group.label" :label="group.label">
+                    <el-option v-for="item in group.options" :key="item.value" :label="item.label"
+                      :value="item.value" />
+                  </el-option-group>
+                </el-select>
+
+              </el-descriptions-item>
+
+              <el-descriptions-item label="负载均衡" label-align="left">
+                <!-- <el-tag>{{ _lb }}</el-tag> -->
+
+                <el-switch v-model="_lb_switch" />
+
+              </el-descriptions-item>
+
+            </el-descriptions>
+          </div>
+
+
+
+          <div class="card mb10" v-if="displayReadlyOnlyStat">
             <h5 class="title">记录信息</h5>
 
-            <el-table :data="rrSet" row-key="ID2">
-              <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
-              <!-- <el-table-column align="left" label="用户名" min-width="150" prop="userName" /> -->
-              <!-- <el-table-column align="left" label="昵称" min-width="150" prop="nickName" /> -->
-              <!-- <el-table-column align="left" label="手机号" min-width="180" prop="phone" /> -->
-              <!-- <el-table-column align="left" label="邮箱" min-width="180" prop="email" /> -->
+            <el-table :data="rrSet">
 
               <el-table-column align="left" label="记录值" min-width="200" prop="data" />
               <el-table-column align="left" label="权重" min-width="40" prop="wt" />
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
               <el-table-column align="left" label="状态" min-width="40" prop="stat" />
+
               <!-- <el-table-column align="left" label="vid" min-width="200" prop="vid" />
               <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" /> -->
 
@@ -153,9 +208,9 @@
         </template>
         <template #footer>
           <div style="flex: auto">
-            <el-button type="warning" @click="configRrSet" plain>配置</el-button>
-            <el-button @click="cancelClick" plain>取消</el-button>
-            <el-button type="primary" @click="confirmClick" plain>提交</el-button>
+            <el-button v-show="displayReadlyOnlyStat" type="warning" @click="configRrSet" plain>配置</el-button>
+            <el-button v-show="!displayReadlyOnlyStat" type="primary" @click="confirmClick" plain>提交</el-button>
+            <el-button v-show="!displayReadlyOnlyStat" @click="cancelClick" plain>取消</el-button>
           </div>
         </template>
       </el-drawer>
@@ -180,8 +235,53 @@ defineOptions({
 })
 
 
+let displayReadlyOnlyStat = ref(true);
+
+const _host_input = ref('');
+const _r_typ_select = ref('A');
+const _lb_switch = ref(false);
+
+const _view_val = ref('');
+const _view_options = [
+  {
+    label: 'Popular cities',
+    options: [
+      {
+        value: 'Shanghai',
+        label: 'Shanghai',
+      },
+      {
+        value: 'Beijing',
+        label: 'Beijing',
+      },
+    ],
+  },
+  {
+    label: 'City name',
+    options: [
+      {
+        value: 'Chengdu',
+        label: 'Chengdu',
+      },
+      {
+        value: 'Shenzhen',
+        label: 'Shenzhen',
+      },
+      {
+        value: 'Guangzhou',
+        label: 'Guangzhou',
+      },
+      {
+        value: 'Dalian',
+        label: 'Dalian',
+      },
+    ],
+  },
+];
+
 const configRrSet = () => {
   console.log("configRrSet");
+  displayReadlyOnlyStat.value = !displayReadlyOnlyStat.value;
 };
 
 
@@ -191,6 +291,7 @@ const rrSet = ref([]);
 
 const handleClose = () => {
   drawer_rrset.value = false;
+  displayReadlyOnlyStat.value = true;
 };
 
 // const open_drawer_rrset = () => {
@@ -208,7 +309,8 @@ const handleClose = () => {
 // }
 
 function cancelClick() {
-  drawer_rrset.value = false
+  // drawer_rrset.value = false
+  displayReadlyOnlyStat.value = true;
 }
 
 function confirmClick() {
@@ -282,6 +384,8 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
       _host.value = host;
       _zone.value = zone;
       _view.value = vid;
+
+      _host_input.value = host;
     }
 
     rrSet.value = ret.data.rrs;
@@ -438,10 +542,12 @@ const switchEnable = async (row) => {
   height: auto;
   padding: 8px;
   display: inline-block;
+  font-size: 13px;
   min-height: 35px;
   line-height: 18px;
   word-wrap: break-word;
   word-break: break-word;
+  /* max-width: 600px; */
 }
 
 .drawer-header-box {
@@ -455,10 +561,18 @@ const switchEnable = async (row) => {
   /* background-color: #eee; */
 }
 
-/* .custom-btn {
- font-size: 14px;
- color: aliceblue;
+/* .drawer-footer-box {
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 } */
+
+.host-box {
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -493,5 +607,11 @@ const switchEnable = async (row) => {
 
 :deep(.el-drawer__title) {
   font-size: 20px;
+}
+</style>
+
+<style lang="scss">
+.host-custom-label {
+  width: 120px;
 }
 </style>
