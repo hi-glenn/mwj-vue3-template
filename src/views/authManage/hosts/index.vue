@@ -168,8 +168,6 @@
 
 <script setup>
 
-import { getTableUserList } from '@/api/modules/user'
-
 import { getHostList, getRrset } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
