@@ -83,15 +83,7 @@
       <el-drawer v-model="drawer_rrset" direction="rtl" :open="open_drawer_rrset" :before-close="handleClose"
         size="750">
         <template #header>
-          <div class="drawer-header-box">
-            <div>
-              <h4>查看记录</h4>
-            </div>
-            <div>
-              <el-button class="custom-btn" type="warning" icon="EditPen" @click="test_btn">编辑</el-button>
-            </div>
-
-          </div>
+          <h4>配置记录</h4>
 
         </template>
         <template #default>
@@ -185,8 +177,9 @@
         </template>
         <template #footer>
           <div style="flex: auto">
-            <el-button @click="cancelClick">cancel</el-button>
-            <el-button type="primary" @click="confirmClick">confirm</el-button>
+            <el-button type="warning" @click="test_btn" plain>配置</el-button>
+            <el-button @click="cancelClick" plain>取消</el-button>
+            <el-button type="primary" @click="confirmClick" plain>提交</el-button>
           </div>
         </template>
       </el-drawer>
@@ -476,10 +469,10 @@ const switchEnable = async (row) => {
   /* list-style: none; */
   /* background-color: #eee; */
 }
-.custom-btn {
+/* .custom-btn {
  font-size: 14px;
  color: aliceblue;
-}
+} */
 </style>
 
 <style lang="scss" scoped>
@@ -508,7 +501,7 @@ const switchEnable = async (row) => {
 		background-color: rgb(245,245,245);
 		padding:0px 20px;
 		height: 50px;
-		color: #000000;
+		/* color: #000000; */
 		margin-bottom: 0px;
 	}
 	:deep(.el-drawer__title){
