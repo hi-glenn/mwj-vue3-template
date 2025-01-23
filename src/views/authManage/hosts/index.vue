@@ -181,6 +181,54 @@
               <el-table-column align="left" label="记录值" min-width="200" prop="data" />
               <el-table-column align="left" label="权重" min-width="40" prop="wt" />
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
+              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
+
+              <el-table-column align="left" label="状态" min-width="40">
+                <template #default="scope">
+                  <el-tag :type="scope.row.stat === 0 ? 'success' : 'info'" disable-transitions>{{ scope.row.stat ==
+                    0 ? '启用' : '暂停' }}</el-tag>
+                </template>
+
+              </el-table-column>
+
+            </el-table>
+          </div>
+
+
+          <div class="card mb10" v-if="displayReadlyOnlyStat">
+            <h5 class="title">记录信息</h5>
+
+            <el-table :data="rrSet">
+
+              <!-- <el-table-column align="left" label="记录值" min-width="200" prop="data" /> -->
+              <el-table-column align="left" label="记录值" min-width="200">
+                <template #default="scope">
+                  <el-input size="default" placeholder="请输入内容" v-model="scope.row.data"></el-input>
+                </template>
+              </el-table-column>
+
+              <el-table-column align="left" label="权重" min-width="90" prop="wt">
+                <template #default="scope">
+                  <!-- <el-input size="default" placeholder="权重" v-model="scope.row.wt"></el-input> -->
+
+                  <el-input-number v-model="scope.row.wt" :min="0" :max="100" size="default" :value-on-clear="1"
+                    controls-position="right">
+                    <template #decrease-icon>
+                      <el-icon>
+                        <Minus />
+                      </el-icon>
+                    </template>
+                    <template #increase-icon>
+                      <el-icon>
+                        <Plus />
+                      </el-icon>
+                    </template>
+                  </el-input-number>
+
+                </template>
+              </el-table-column>
+
+              <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
               <el-table-column align="left" label="状态" min-width="40" prop="stat" />
 
               <!-- <el-table-column align="left" label="vid" min-width="200" prop="vid" />
@@ -190,11 +238,11 @@
               <!-- <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" /> -->
 
               <!-- <el-table-column align="left" label="启用" min-width="150">
-          <template #default="scope">
-            <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
-              @change="() => { switchEnable(scope.row) }" />
-          </template>
-    </el-table-column> -->
+              <template #default="scope">
+                 <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
+               @change="() => { switchEnable(scope.row) }" />
+                  </template>
+                 </el-table-column> -->
 
               <el-table-column label="操作" min-width="80" fixed="right">
                 <template #default="scope">
@@ -203,6 +251,12 @@
               </el-table-column>
 
             </el-table>
+
+            <div style="padding: 0 12px">
+              <el-button type="primary" :icon="Plus" plain></el-button>
+            </div>
+
+
           </div>
 
         </template>
@@ -228,8 +282,8 @@ import { getHostList, getRrset } from '@/api/modules/host'
 import { nextTick, ref } from 'vue'
 import { ElMessage, ElMessageBox, ElDrawer } from 'element-plus'
 
-// import { CirclePlus, Delete, EditPen, Download, Upload } from "@element-plus/icons-vue";
-
+import { Plus } from "@element-plus/icons-vue";
+// , CirclePlus, Delete, EditPen, Download, Upload
 defineOptions({
   name: 'Host',
 })
@@ -567,6 +621,10 @@ const switchEnable = async (row) => {
   justify-content: space-between;
   align-items: center;
 } */
+
+.el-input-number {
+  width: 90px;
+}
 
 .host-box {
   display: -webkit-flex;
