@@ -29,7 +29,7 @@
 
         <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
-            <el-button type="primary" link icon="edit" @click="openEdit(scope.row)">管理</el-button>
+            <el-button type="primary" link icon="edit" @click="manageRrSet(scope.row)">管理</el-button>
             <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
 
             <!-- <el-button type="primary" style="margin-left: 16px" @click="drawer2 = true">with footer</el-button> -->
@@ -102,7 +102,7 @@
                 <el-tag>{{ _r_typ }}</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
-                <el-tag>{{ _view }}</el-tag>
+                <el-tag>{{ _vid }}</el-tag>
               </el-descriptions-item>
 
               <el-descriptions-item label="负载均衡" label-align="left">
@@ -236,8 +236,10 @@
               <el-table-column align="left" label="状态" min-width="50" prop="stat">
 
                 <template #default="scope">
-                  <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1"
-                    @change="() => { switchEnable(scope.row) }" />
+                  <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1" />
+
+                  <!-- <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1"
+                    @change="() => { switchEnable(scope.row) }" /> -->
                 </template>
               </el-table-column>
 
@@ -259,7 +261,7 @@
 
               <el-table-column label="操作" min-width="80" fixed="right">
                 <template #default="scope">
-                  <el-button type="danger" link icon="delete" @click="deleteUserFunc(scope.row)"></el-button>
+                  <el-button type="danger" link icon="delete" @click="delRrFn(scope.row, scope.$index)"></el-button>
                 </template>
               </el-table-column>
 
@@ -277,7 +279,7 @@
           <div style="flex: auto">
             <el-button v-show="displayReadOnlyStat" type="warning" @click="configRrSet" plain>配置</el-button>
             <el-button v-show="!displayReadOnlyStat" type="primary" @click="confirmClick" plain>提交</el-button>
-            <el-button v-show="!displayReadOnlyStat" @click="cancelClick" plain>取消</el-button>
+            <el-button v-show="!displayReadOnlyStat" @click="cancelConfigRrSet()" plain>取消</el-button>
           </div>
         </template>
       </el-drawer>
@@ -366,6 +368,8 @@ const rrSet = ref([]);
 const handleClose = () => {
   drawer_rrset.value = false;
   displayReadOnlyStat.value = true;
+
+  // router.push({ query: {} });
 };
 
 // const open_drawer_rrset = () => {
@@ -382,8 +386,11 @@ const handleClose = () => {
 //     })
 // }
 
-function cancelClick() {
+function cancelConfigRrSet() {
   // drawer_rrset.value = false
+
+  bindRrsetData(_zone.value, _host.value, _r_typ.value, _vid.value, _v_typ.value);
+
   displayReadOnlyStat.value = true;
 }
 
@@ -439,7 +446,9 @@ const _r_typ = ref('');
 const _host = ref('');
 const _zone = ref('');
 
-const _view = ref('');
+const _vid = ref('');
+const _v_typ = ref('');
+
 const _lb = ref('');
 
 const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
@@ -457,7 +466,8 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
 
       _host.value = host;
       _zone.value = zone;
-      _view.value = vid;
+      _vid.value = vid;
+      _v_typ.value = v_typ;
 
       _host_input.value = host;
     }
@@ -495,14 +505,30 @@ const resetPasswordFunc = (row) => {
   })
 }
 
+const delRrFn = async (row, inx) => {
+  ElMessageBox.confirm('确定要删除该记录吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+
+    rrSet.value.splice(inx, 1);
+
+  })
+}
+
 const deleteUserFunc = async (row) => {
   ElMessageBox.confirm('确定要删除吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
+
+    rrSet.value.splice(row.index, 1);
+
     ElMessage.success('删除成功')
     await bindHostData()
+
   })
 }
 
@@ -584,7 +610,7 @@ const addUser = () => {
 }
 
 
-const openEdit = (row) => {
+const manageRrSet = (row) => {
   dialogFlag.value = 'edit';
   // userInfo.value = JSON.parse(JSON.stringify(row))
   // addUserDialog.value = true
@@ -593,9 +619,13 @@ const openEdit = (row) => {
 
   console.log("open drawer");
 
-  drawer_rrset.value = true;
-
   bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
+
+  // route.query.host = ret.host;
+
+  // router.push({ query: { host: ret.host, r_typ: ret.r_typ } });
+
+  drawer_rrset.value = true;
 }
 
 const switchEnable = async (row) => {
