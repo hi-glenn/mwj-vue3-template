@@ -229,7 +229,20 @@
               </el-table-column>
 
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
-              <el-table-column align="left" label="状态" min-width="40" prop="stat" />
+              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
+
+              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
+
+              <el-table-column align="left" label="状态" min-width="50" prop="stat">
+
+                <template #default="scope">
+                  <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1"
+                    @change="() => { switchEnable(scope.row) }" />
+                </template>
+              </el-table-column>
+
+
+
 
               <!-- <el-table-column align="left" label="vid" min-width="200" prop="vid" />
               <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" /> -->
@@ -342,7 +355,7 @@ const addRrFunc = () => {
 
   console.log("---addRrFunc");
   // lb: 1, r_typ:"A",
-  rrSet.value.push({data:"",  stat: 0, ttl: 300, wt: 1});
+  rrSet.value.push({ data: "", stat: 0, ttl: 300, wt: 1 });
 
 };
 
