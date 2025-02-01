@@ -89,7 +89,7 @@
         <template #default>
 
           <!-- readonly -->
-          <div class="card mb10" v-if="displayReadlyOnlyStat">
+          <div class="card mb10" v-if="displayReadOnlyStat">
             <h5 class="title">基本信息</h5>
             <!-- class-name="color_label" -->
             <el-descriptions :column="1" border size="default">
@@ -113,7 +113,7 @@
           </div>
 
           <!-- writable -->
-          <div class="card mb10" v-if="!displayReadlyOnlyStat">
+          <div class="card mb10" v-if="!displayReadOnlyStat">
             <h5 class="title">基本信息</h5>
             <el-descriptions :column="1" border size="default">
               <el-descriptions-item label="域名" label-align="left" label-class-name="host-custom-label">
@@ -173,7 +173,7 @@
 
 
 
-          <div class="card mb10" v-if="displayReadlyOnlyStat">
+          <div class="card mb10" v-if="displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
             <el-table :data="rrSet">
@@ -195,7 +195,7 @@
           </div>
 
 
-          <div class="card mb10" v-if="displayReadlyOnlyStat">
+          <div class="card mb10" v-if="!displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
             <el-table :data="rrSet">
@@ -252,8 +252,8 @@
 
             </el-table>
 
-            <div style="padding: 0 12px">
-              <el-button type="primary" :icon="Plus" plain></el-button>
+            <div style="padding: 10px 12px 0 12px">
+              <el-button type="primary" :icon="Plus" plain @click="addRrFunc()"></el-button>
             </div>
 
 
@@ -262,9 +262,9 @@
         </template>
         <template #footer>
           <div style="flex: auto">
-            <el-button v-show="displayReadlyOnlyStat" type="warning" @click="configRrSet" plain>配置</el-button>
-            <el-button v-show="!displayReadlyOnlyStat" type="primary" @click="confirmClick" plain>提交</el-button>
-            <el-button v-show="!displayReadlyOnlyStat" @click="cancelClick" plain>取消</el-button>
+            <el-button v-show="displayReadOnlyStat" type="warning" @click="configRrSet" plain>配置</el-button>
+            <el-button v-show="!displayReadOnlyStat" type="primary" @click="confirmClick" plain>提交</el-button>
+            <el-button v-show="!displayReadOnlyStat" @click="cancelClick" plain>取消</el-button>
           </div>
         </template>
       </el-drawer>
@@ -289,7 +289,7 @@ defineOptions({
 })
 
 
-let displayReadlyOnlyStat = ref(true);
+let displayReadOnlyStat = ref(true);
 
 const _host_input = ref('');
 const _r_typ_select = ref('A');
@@ -335,9 +335,16 @@ const _view_options = [
 
 const configRrSet = () => {
   console.log("configRrSet");
-  displayReadlyOnlyStat.value = !displayReadlyOnlyStat.value;
+  displayReadOnlyStat.value = !displayReadOnlyStat.value;
 };
 
+const addRrFunc = () => {
+
+  console.log("---addRrFunc");
+  // lb: 1, r_typ:"A",
+  rrSet.value.push({data:"",  stat: 0, ttl: 300, wt: 1});
+
+};
 
 const drawer_rrset = ref(false)
 
@@ -345,7 +352,7 @@ const rrSet = ref([]);
 
 const handleClose = () => {
   drawer_rrset.value = false;
-  displayReadlyOnlyStat.value = true;
+  displayReadOnlyStat.value = true;
 };
 
 // const open_drawer_rrset = () => {
@@ -364,7 +371,7 @@ const handleClose = () => {
 
 function cancelClick() {
   // drawer_rrset.value = false
-  displayReadlyOnlyStat.value = true;
+  displayReadOnlyStat.value = true;
 }
 
 function confirmClick() {
