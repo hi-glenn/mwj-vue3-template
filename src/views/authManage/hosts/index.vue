@@ -105,8 +105,15 @@
                 <el-tag>{{ _vid }}</el-tag>
               </el-descriptions-item>
 
-              <el-descriptions-item label="负载均衡" label-align="left">
-                <el-tag>{{ _lb }}</el-tag>
+              <!-- <el-descriptions-item label="负载均衡" label-align="left"> -->
+              <el-descriptions-item label="负载均衡" label-align="left"
+                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
+
+                <!-- <el-tag>{{ _lb }}</el-tag> -->
+
+                <el-tag :type="_lb === 1 ? 'success' : 'info'" disable-transitions>{{ _lb ==
+                  1 ? '开启' : '关闭' }}</el-tag>
+
               </el-descriptions-item>
 
             </el-descriptions>
@@ -161,10 +168,15 @@
 
               </el-descriptions-item>
 
-              <el-descriptions-item label="负载均衡" label-align="left">
-                <!-- <el-tag>{{ _lb }}</el-tag> -->
+              <!-- <el-descriptions-item label="负载均衡" label-align="left"
+                v-if="!(_r_typ_select.value != 'A' && _r_typ_select.value != 'AAAA' && _r_typ_select.value != 'CNAME')"> -->
+              <el-descriptions-item label="负载均衡" label-align="left"
+                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
 
-                <el-switch v-model="_lb_switch" />
+                <el-radio-group v-model="_lb">
+                  <el-radio :value="0">关闭</el-radio>
+                  <el-radio :value="1">开启</el-radio>
+                </el-radio-group>
 
               </el-descriptions-item>
 
@@ -229,9 +241,6 @@
               </el-table-column>
 
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
-              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
-
-              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
 
               <el-table-column align="left" label="状态" min-width="50" prop="stat">
 
@@ -308,7 +317,7 @@ let displayReadOnlyStat = ref(true);
 
 const _host_input = ref('');
 const _r_typ_select = ref('A');
-const _lb_switch = ref(false);
+const _lb_switch = ref(0);
 
 const _view_val = ref('');
 const _view_options = [
@@ -395,13 +404,18 @@ function cancelConfigRrSet() {
 }
 
 function confirmClick() {
-  ElMessageBox.confirm(`Are you confirm to chose ?`)
-    .then(() => {
-      drawer_rrset.value = false
-    })
-    .catch(() => {
-      // catch error
-    })
+
+  console.log("-----rrSet.value.length: ", rrSet.value.length);
+
+  console.log("-----rrSet.value: ", rrSet.value);
+
+  // ElMessageBox.confirm(`Are you confirm to chose ?`)
+  //   .then(() => {
+  //     drawer_rrset.value = false
+  //   })
+  //   .catch(() => {
+  //     // catch error
+  //   })
 }
 
 // -----------------------------
@@ -449,7 +463,7 @@ const _zone = ref('');
 const _vid = ref('');
 const _v_typ = ref('');
 
-const _lb = ref('');
+const _lb = ref(0);
 
 const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
 
