@@ -146,13 +146,19 @@
                   class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
               </el-descriptions-item>
               <el-descriptions-item label="记录类型" label-align="left">
-                <!-- <el-tag>{{ _r_typ }}</el-tag> -->
 
                 <div class="mt-4">
-                  <el-select v-model="_r_typ_select" placeholder="Select" style="max-width: 600px">
+                  <el-select v-model="_r_typ" placeholder="Select" style="max-width: 600px">
                     <el-option label="A" value="A" />
                     <el-option label="AAAA" value="AAAA" />
                     <el-option label="CNAME" value="CNAME" />
+                    <el-option label="TXT" value="TXT" />
+                    <el-option label="MX" value="MX" />
+                    <el-option label="CAA" value="CAA" />
+                    <el-option label="SRV" value="SRV" />
+                    <el-option label="NS" value="NS" />
+                    <el-option label="SOA" value="SOA" />
+
                   </el-select>
                 </div>
 
@@ -168,8 +174,6 @@
 
               </el-descriptions-item>
 
-              <!-- <el-descriptions-item label="负载均衡" label-align="left"
-                v-if="!(_r_typ_select.value != 'A' && _r_typ_select.value != 'AAAA' && _r_typ_select.value != 'CNAME')"> -->
               <el-descriptions-item label="负载均衡" label-align="left"
                 v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
 
