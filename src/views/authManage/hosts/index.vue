@@ -102,10 +102,11 @@
                 <el-tag>{{ _r_typ }}</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
-                <el-tag>{{ _vid }}</el-tag>
+                <!-- <el-tag>{{ _vid }}</el-tag> -->
+                <el-tag :type="_vid === 1 ? 'primary' : 'warning'" disable-transitions>{{ _vid ==
+                  1 ? '默认' : '未知' }}</el-tag>
               </el-descriptions-item>
 
-              <!-- <el-descriptions-item label="负载均衡" label-align="left"> -->
               <el-descriptions-item label="负载均衡" label-align="left"
                 v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
 
@@ -195,9 +196,9 @@
             <el-table :data="rrSet">
 
               <el-table-column align="left" label="记录值" min-width="200" prop="data" />
-              <el-table-column align="left" label="权重" min-width="40" prop="wt" />
+              <el-table-column align="left" label="权重" min-width="40" prop="wt"
+                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1" />
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
-              <!-- <el-table-column align="left" label="状态" min-width="40" prop="stat" /> -->
 
               <el-table-column align="left" label="状态" min-width="40">
                 <template #default="scope">
@@ -223,7 +224,8 @@
                 </template>
               </el-table-column>
 
-              <el-table-column align="left" label="权重" min-width="90" prop="wt">
+              <el-table-column align="left" label="权重" min-width="90" prop="wt"
+                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1">
                 <template #default="scope">
                   <!-- <el-input size="default" placeholder="权重" v-model="scope.row.wt"></el-input> -->
 
@@ -291,7 +293,7 @@
         <template #footer>
           <div style="flex: auto">
             <el-button v-show="displayReadOnlyStat" type="warning" @click="configRrSet" plain>配置</el-button>
-            <el-button v-show="!displayReadOnlyStat" type="primary" @click="confirmClick" plain>提交</el-button>
+            <el-button v-show="!displayReadOnlyStat" type="primary" @click="postRrSet" plain>提交</el-button>
             <el-button v-show="!displayReadOnlyStat" @click="cancelConfigRrSet()" plain>取消</el-button>
           </div>
         </template>
@@ -320,45 +322,48 @@ defineOptions({
 let displayReadOnlyStat = ref(true);
 
 const _host_input = ref('');
-const _r_typ_select = ref('A');
-const _lb_switch = ref(0);
+
+const _r_typ = ref('');
+const _host = ref('');
+const _zone = ref('');
+
+const _vid = ref('');
+const _v_typ = ref('');
+
+const _lb = ref(0);
 
 const _view_val = ref('');
 const _view_options = [
   {
-    label: 'Popular cities',
+    label: '默认线路',
     options: [
       {
-        value: 'Shanghai',
-        label: 'Shanghai',
-      },
-      {
-        value: 'Beijing',
-        label: 'Beijing',
+        value: 1,
+        label: 'Default',
       },
     ],
   },
-  {
-    label: 'City name',
-    options: [
-      {
-        value: 'Chengdu',
-        label: 'Chengdu',
-      },
-      {
-        value: 'Shenzhen',
-        label: 'Shenzhen',
-      },
-      {
-        value: 'Guangzhou',
-        label: 'Guangzhou',
-      },
-      {
-        value: 'Dalian',
-        label: 'Dalian',
-      },
-    ],
-  },
+  // {
+  //   label: 'City name',
+  //   options: [
+  //     {
+  //       value: 'Chengdu',
+  //       label: 'Chengdu',
+  //     },
+  //     {
+  //       value: 'Shenzhen',
+  //       label: 'Shenzhen',
+  //     },
+  //     {
+  //       value: 'Guangzhou',
+  //       label: 'Guangzhou',
+  //     },
+  //     {
+  //       value: 'Dalian',
+  //       label: 'Dalian',
+  //     },
+  //   ],
+  // },
 ];
 
 const configRrSet = () => {
@@ -407,7 +412,27 @@ function cancelConfigRrSet() {
   displayReadOnlyStat.value = true;
 }
 
-function confirmClick() {
+function postRrSet() {
+
+  console.log("host: ", _host.value, "; zone: ", _zone.value, "; r_typ: ", _r_typ.value, "; vid: ", _vid.value, "; v_typ: ", _v_typ.value, "; lb: ", _lb.value)
+
+  let jsonData = {
+    host: _host.value,
+    rtyp: _r_typ.value,
+    vid: _vid.value,
+    vtyp: _v_typ.value,
+    lb: _lb.value,
+    rr: []
+  };
+
+  for (let inx = 0; inx < rrSet.value.length; inx++) {
+    jsonData.rr.push({ rdata: rrSet.value[inx].data, ttl: rrSet.value[inx].ttl, wt: rrSet.value[inx].wt, stat: rrSet.value[inx].stat });
+  }
+
+  // userInfo.value = JSON.parse(JSON.stringify(row))
+
+  console.log(JSON.stringify(jsonData, null, 2));
+
 
   console.log("-----rrSet.value.length: ", rrSet.value.length);
 
@@ -460,14 +485,7 @@ const bindHostData = async (zone, page_size, page_no) => {
 }
 
 // ---------
-const _r_typ = ref('');
-const _host = ref('');
-const _zone = ref('');
 
-const _vid = ref('');
-const _v_typ = ref('');
-
-const _lb = ref(0);
 
 const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
 
@@ -633,7 +651,9 @@ const manageRrSet = (row) => {
   // userInfo.value = JSON.parse(JSON.stringify(row))
   // addUserDialog.value = true
 
-  let ret = JSON.parse(JSON.stringify(row));
+  // let ret = JSON.parse(JSON.stringify(row));
+
+  let ret = row;
 
   console.log("open drawer");
 
