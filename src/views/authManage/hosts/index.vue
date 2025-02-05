@@ -2,7 +2,7 @@
   <div>
     <div class="table-box">
       <div class="mwj-btn-list">
-        <el-button type="primary" icon="plus" @click="addUser">添加记录</el-button>
+        <el-button type="primary" icon="plus" @click="addRrSet">添加记录</el-button>
 
       </div>
       <el-table :data="hostList" row-key="ID">
@@ -46,7 +46,8 @@
           @size-change="handleSizeChange" />
       </div>
     </div>
-    <el-dialog v-model="addUserDialog" title="用户" :show-close="false" :close-on-press-escape="false"
+
+    <!-- <el-dialog v-model="addUserDialog" title="用户" :show-close="false" :close-on-press-escape="false"
       :close-on-click-modal="false">
       <div style="height:60vh;overflow:auto;padding:0 12px;">
         <el-form ref="userForm" :rules="rules" :model="userInfo" label-width="80px">
@@ -77,7 +78,7 @@
           <el-button type="primary" @click="enterAddUserDialog">确 定</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-dialog> -->
 
     <div>
       <!-- :open="open_drawer_rrset" -->
@@ -129,18 +130,9 @@
 
 
                 <div class="mt-4">
-                  <el-input v-model="_host_input" style="max-width: 600px" placeholder="Please input">
+                  <el-input v-model="_host" style="max-width: 600px" placeholder="Please input">
                     <template #append>.{{ _zone }}</template>
                   </el-input>
-
-                  <!-- <div class="host-box"></div>
-                  <el-input v-model="_host_input" style="max-width: 400px" placeholder="Please input" autosize
-                    type="textarea">
-                  </el-input>
-                  <div style="padding-left: 10px;">
-                    <el-tag>.{{ _zone }}</el-tag>
-                  </div> -->
-
                 </div>
 
                 <!-- <el-tag
@@ -224,7 +216,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column align="left" label="权重" min-width="90" prop="wt"
+              <el-table-column align="left" label="权重" min-width="90"
                 v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1">
                 <template #default="scope">
 
@@ -336,7 +328,7 @@ defineOptions({
 
 let displayReadOnlyStat = ref(true);
 
-const _host_input = ref('');
+// const _host_input = ref('');
 
 const _r_typ = ref('');
 const _host = ref('');
@@ -449,8 +441,7 @@ function postRrSet() {
   console.log(JSON.stringify(jsonData, null, 2));
 
 
-  // console.log("-----rrSet.value.length: ", rrSet.value.length);
-
+  // console.log("-----rrSet.value.length: ", rrSet.value.length);s
   // console.log("-----rrSet.value: ", rrSet.value);
 
   let jsonBody = {
@@ -550,7 +541,6 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
       _vid.value = vid;
       _v_typ.value = v_typ;
 
-      _host_input.value = host;
     }
 
     rrSet.value = ret.data.rrs;
@@ -569,22 +559,22 @@ const initPage = async () => {
 
 initPage()
 
-const resetPasswordFunc = (row) => {
-  ElMessageBox.confirm(
-    '是否将此用户密码重置为123456?',
-    '警告',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then(async () => {
-    ElMessage({
-      type: 'success',
-      message: "重置密码成功",
-    })
-  })
-}
+// const resetPasswordFunc = (row) => {
+//   ElMessageBox.confirm(
+//     '是否将此用户密码重置为123456?',
+//     '警告',
+//     {
+//       confirmButtonText: '确定',
+//       cancelButtonText: '取消',
+//       type: 'warning',
+//     }
+//   ).then(async () => {
+//     ElMessage({
+//       type: 'success',
+//       message: "重置密码成功",
+//     })
+//   })
+// }
 
 const delRrFn = async (row, inx) => {
   ElMessageBox.confirm('确定要删除该记录吗?', '提示', {
@@ -598,105 +588,118 @@ const delRrFn = async (row, inx) => {
   })
 }
 
-const deleteUserFunc = async (row) => {
-  ElMessageBox.confirm('确定要删除吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(async () => {
+// const deleteUserFunc = async (row) => {
+//   ElMessageBox.confirm('确定要删除吗?', '提示', {
+//     confirmButtonText: '确定',
+//     cancelButtonText: '取消',
+//     type: 'warning'
+//   }).then(async () => {
 
-    rrSet.value.splice(row.index, 1);
+//     rrSet.value.splice(row.index, 1);
 
-    ElMessage.success('删除成功')
-    await bindHostData()
+//     ElMessage.success('删除成功')
+//     await bindHostData()
 
-  })
-}
+//   })
+// }
 
-// 弹窗相关
-const userInfo = ref({
-  username: '',
-  password: '',
-  nickName: '',
-  enable: 1,
-})
+// // 弹窗相关
+// const userInfo = ref({
+//   username: '',
+//   password: '',
+//   nickName: '',
+//   enable: 1,
+// })
 
-const rules = ref({
-  userName: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, message: '最低5位字符', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入用户密码', trigger: 'blur' },
-    { min: 6, message: '最低6位字符', trigger: 'blur' }
-  ],
-  nickName: [
-    { required: true, message: '请输入用户昵称', trigger: 'blur' }
-  ],
-  phone: [
-    { pattern: /^1([38][0-9]|4[014-9]|[59][0-35-9]|6[2567]|7[0-8])\d{8}$/, message: '请输入合法手机号', trigger: 'blur' },
-  ],
-  email: [
-    { pattern: /^([0-9A-Za-z\-_.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: '请输入正确的邮箱', trigger: 'blur' },
-  ],
-})
-const userForm = ref(null)
-const enterAddUserDialog = async () => {
-  userForm.value.validate(async valid => {
-    if (valid) {
-      const req = {
-        ...userInfo.value
-      }
-      if (dialogFlag.value === 'add') {
-        const res = await register(req)
-        if (res.code === 0) {
-          ElMessage({ type: 'success', message: '创建成功' })
-          await bindHostData()
-          closeAddUserDialog()
-        }
-      }
-      if (dialogFlag.value === 'edit') {
-        if (res.code === 0) {
-          ElMessage({ type: 'success', message: '编辑成功' })
-          await bindHostData()
-          closeAddUserDialog()
-        }
-      }
-    }
-  })
-}
+// const rules = ref({
+//   userName: [
+//     { required: true, message: '请输入用户名', trigger: 'blur' },
+//     { min: 5, message: '最低5位字符', trigger: 'blur' }
+//   ],
+//   password: [
+//     { required: true, message: '请输入用户密码', trigger: 'blur' },
+//     { min: 6, message: '最低6位字符', trigger: 'blur' }
+//   ],
+//   nickName: [
+//     { required: true, message: '请输入用户昵称', trigger: 'blur' }
+//   ],
+//   phone: [
+//     { pattern: /^1([38][0-9]|4[014-9]|[59][0-35-9]|6[2567]|7[0-8])\d{8}$/, message: '请输入合法手机号', trigger: 'blur' },
+//   ],
+//   email: [
+//     { pattern: /^([0-9A-Za-z\-_.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: '请输入正确的邮箱', trigger: 'blur' },
+//   ],
+// })
+// const userForm = ref(null)
+// const enterAddUserDialog = async () => {
+//   userForm.value.validate(async valid => {
+//     if (valid) {
+//       const req = {
+//         ...userInfo.value
+//       }
+//       if (dialogFlag.value === 'add') {
+//         const res = await register(req)
+//         if (res.code === 0) {
+//           ElMessage({ type: 'success', message: '创建成功' })
+//           await bindHostData()
+//           closeAddUserDialog()
+//         }
+//       }
+//       if (dialogFlag.value === 'edit') {
+//         if (res.code === 0) {
+//           ElMessage({ type: 'success', message: '编辑成功' })
+//           await bindHostData()
+//           closeAddUserDialog()
+//         }
+//       }
+//     }
+//   })
+// }
 
-const addUserDialog = ref(false)
-const closeAddUserDialog = () => {
-  userForm.value.resetFields()
-  addUserDialog.value = false
-}
+// const addUserDialog = ref(false)
+// const closeAddUserDialog = () => {
+//   userForm.value.resetFields()
+//   addUserDialog.value = false
+// }
 
-const dialogFlag = ref('add')
+// const dialogFlag = ref('add')
 
-const addUser = () => {
-  dialogFlag.value = 'add';
-  addUserDialog.value = true;
+// const addUser = () => {
+//   dialogFlag.value = 'add';
+//   addUserDialog.value = true;
 
-  console.log("add user()");
+//   console.log("add user()");
 
-  let t1 = import.meta.env.VITE_GLOB_APP_TITLE;
-  console.log(t1);
+//   let t1 = import.meta.env.VITE_GLOB_APP_TITLE;
+//   console.log(t1);
 
-  let t2 = import.meta.env.VITE_BASE_PATH;
-  console.log(t2);
+//   let t2 = import.meta.env.VITE_BASE_PATH;
+//   console.log(t2);
 
-  let t3 = import.meta.env.VITE_API_URL;
-  console.log(t3);
-}
+//   let t3 = import.meta.env.VITE_API_URL;
+//   console.log(t3);
+// }
+
+const addRrSet = () => {
+
+  drawer_rrset.value = true;
+
+  displayReadOnlyStat.value = false;
+
+
+  _r_typ.value = "A";
+  _lb.value = 0;
+
+  _host.value = "";
+  _zone.value = route.params.zone;
+  _vid.value = 1;
+  _v_typ.value = 1;
+
+  rrSet.value = [];
+};
 
 
 const manageRrSet = (row) => {
-  dialogFlag.value = 'edit';
-  // userInfo.value = JSON.parse(JSON.stringify(row))
-  // addUserDialog.value = true
-
-  // let ret = JSON.parse(JSON.stringify(row));
 
   let ret = row;
 
@@ -704,21 +707,17 @@ const manageRrSet = (row) => {
 
   bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
 
-  // route.query.host = ret.host;
-
-  // router.push({ query: { host: ret.host, r_typ: ret.r_typ } });
-
   drawer_rrset.value = true;
 }
 
-const switchEnable = async (row) => {
-  userInfo.value = JSON.parse(JSON.stringify(row))
-  await nextTick()
-  const req = {
-    ...userInfo.value
-  }
-  ElMessage({ type: 'success', message: `${req.enable === 2 ? '禁用' : '启用'}成功` })
-}
+// const switchEnable = async (row) => {
+//   userInfo.value = JSON.parse(JSON.stringify(row))
+//   await nextTick()
+//   const req = {
+//     ...userInfo.value
+//   }
+//   ElMessage({ type: 'success', message: `${req.enable === 2 ? '禁用' : '启用'}成功` })
+// }
 
 </script>
 
