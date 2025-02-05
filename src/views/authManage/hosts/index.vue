@@ -307,10 +307,10 @@
 
 <script setup>
 
-import { getHostList, getRrset } from '@/api/modules/host'
+import { getHostList, getRrset, postRrset } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
-import { ElMessage, ElMessageBox, ElDrawer } from 'element-plus'
+import { ElMessage, ElMessageBox, ElDrawer, ElNotification } from 'element-plus'
 
 import { Plus } from "@element-plus/icons-vue";
 // , CirclePlus, Delete, EditPen, Download, Upload
@@ -434,17 +434,46 @@ function postRrSet() {
   console.log(JSON.stringify(jsonData, null, 2));
 
 
-  console.log("-----rrSet.value.length: ", rrSet.value.length);
+  // console.log("-----rrSet.value.length: ", rrSet.value.length);
 
-  console.log("-----rrSet.value: ", rrSet.value);
+  // console.log("-----rrSet.value: ", rrSet.value);
 
-  // ElMessageBox.confirm(`Are you confirm to chose ?`)
-  //   .then(() => {
-  //     drawer_rrset.value = false
-  //   })
-  //   .catch(() => {
-  //     // catch error
-  //   })
+  let jsonBody = {
+    zone: _zone.value,
+    data: [jsonData] // JSON.stringify(jsonData)
+  };
+
+
+  ElMessageBox.confirm(`确认提交吗?`)
+    .then(async () => {
+
+      // 异步操作，可以使用 await
+      let ret = await postRrset(jsonBody);
+
+      if (ret.errcode === 0) {
+        // 执行成功后的逻辑
+        // displayReadOnlyStat.value = true;
+
+        ElMessage({
+          type: 'success',
+          duration: 3000,
+          message: "提交成功",
+        });
+
+        // ElNotification({
+        //   title: 'Success',
+        //   message: 'This is a success message',
+        //   type: 'success',
+        // });
+
+        cancelConfigRrSet();
+
+      }
+
+    })
+    .catch(() => {
+      // catch error
+    })
 }
 
 // -----------------------------
