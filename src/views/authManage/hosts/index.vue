@@ -227,10 +227,9 @@
               <el-table-column align="left" label="权重" min-width="90" prop="wt"
                 v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1">
                 <template #default="scope">
-                  <!-- <el-input size="default" placeholder="权重" v-model="scope.row.wt"></el-input> -->
 
-                  <el-input-number v-model="scope.row.wt" :min="0" :max="100" size="default" :value-on-clear="1"
-                    controls-position="right">
+                  <el-input-number v-model="scope.row.wt" :min="0" :max="100" size="default" style="width: 80px;"
+                    :value-on-clear="1" controls-position="right">
                     <template #decrease-icon>
                       <el-icon>
                         <Minus />
@@ -246,7 +245,23 @@
                 </template>
               </el-table-column>
 
-              <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
+              <el-table-column align="left" label="TTL" min-width="100">
+                <template #default="scope">
+                  <el-input-number v-model="scope.row.ttl" :min="60" :max="86400" size="default" style="width: 100px;"
+                    :value-on-clear="60" controls-position="right">
+                    <template #decrease-icon>
+                      <el-icon>
+                        <Minus />
+                      </el-icon>
+                    </template>
+                    <template #increase-icon>
+                      <el-icon>
+                        <Plus />
+                      </el-icon>
+                    </template>
+                  </el-input-number>
+                </template>
+              </el-table-column>
 
               <el-table-column align="left" label="状态" min-width="50" prop="stat">
 
@@ -457,6 +472,7 @@ function postRrSet() {
         ElMessage({
           type: 'success',
           duration: 3000,
+          customClass: 'messageIndex',
           message: "提交成功",
         });
 
@@ -788,5 +804,9 @@ const switchEnable = async (row) => {
 <style lang="scss">
 .host-custom-label {
   width: 120px;
+}
+
+.messageIndex {
+  z-index: 3000 !important;
 }
 </style>
