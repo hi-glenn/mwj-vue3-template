@@ -321,7 +321,7 @@ const addRrFunc = () => {
 
   console.log("---addRrFunc");
   // lb: 1, r_typ:"A",
-  _rrSet.value.push({ data: "", stat: 0, ttl: 300, wt: 1 });
+  _input_rrSet.value.push({ data: "", stat: 0, ttl: 300, wt: 1 });
 
 };
 
