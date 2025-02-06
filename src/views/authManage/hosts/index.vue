@@ -385,7 +385,9 @@ function postRrSet() {
           message: "提交成功",
         });
 
-        bindRrsetData(_input_zone.value, _input_host.value, _input_rtyp.value, _input_vid.value, _input_vtyp.value);
+        await bindRrsetData(_input_zone.value, _input_host.value, _input_rtyp.value, _input_vid.value, _input_vtyp.value);
+
+        // console.log("_rrSet.value.length: ", _rrSet.value.length);
 
         if (_rrSet.value.length == 0) {
           // 若删除了整个 rrset，则关闭抽屉
