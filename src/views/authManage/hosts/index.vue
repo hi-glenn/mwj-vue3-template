@@ -6,36 +6,16 @@
 
       </div>
       <el-table :data="hostList" row-key="ID">
-        <!-- <el-table-column align="left" label="ID" min-width="50" prop="ID" /> -->
-        <!-- <el-table-column align="left" label="用户名" min-width="150" prop="userName" /> -->
-        <!-- <el-table-column align="left" label="昵称" min-width="150" prop="nickName" /> -->
-        <!-- <el-table-column align="left" label="手机号" min-width="180" prop="phone" /> -->
-        <!-- <el-table-column align="left" label="邮箱" min-width="180" prop="email" /> -->
 
         <el-table-column align="left" label="主机记录" min-width="200" prop="host" />
         <el-table-column align="left" label="记录类型" min-width="200" prop="r_typ" />
         <el-table-column align="left" label="vid" min-width="200" prop="vid" />
         <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" />
 
-        <!-- <el-table-column align="left" label="域名" min-width="200" prop="zone" /> -->
-        <!-- <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" /> -->
-
-        <!-- <el-table-column align="left" label="启用" min-width="150">
-          <template #default="scope">
-            <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
-              @change="() => { switchEnable(scope.row) }" />
-          </template>
-</el-table-column> -->
-
         <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
             <el-button type="primary" link icon="edit" @click="manageRrSet(scope.row)">管理</el-button>
             <el-button type="primary" link icon="delete" @click="deleteUserFunc(scope.row)">删除</el-button>
-
-            <!-- <el-button type="primary" style="margin-left: 16px" @click="drawer2 = true">with footer</el-button> -->
-
-
-            <!-- <el-button type="primary" link icon="magic-stick" @click="resetPasswordFunc(scope.row)">重置密码</el-button> -->
           </template>
         </el-table-column>
 
@@ -47,41 +27,7 @@
       </div>
     </div>
 
-    <!-- <el-dialog v-model="addUserDialog" title="用户" :show-close="false" :close-on-press-escape="false"
-      :close-on-click-modal="false">
-      <div style="height:60vh;overflow:auto;padding:0 12px;">
-        <el-form ref="userForm" :rules="rules" :model="userInfo" label-width="80px">
-          <el-form-item v-if="dialogFlag === 'add'" label="用户名" prop="userName">
-            <el-input v-model="userInfo.userName" />
-          </el-form-item>
-          <el-form-item v-if="dialogFlag === 'add'" label="密码" prop="password">
-            <el-input v-model="userInfo.password" />
-          </el-form-item>
-          <el-form-item label="昵称" prop="nickName">
-            <el-input v-model="userInfo.nickName" />
-          </el-form-item>
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model="userInfo.phone" />
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="userInfo.email" />
-          </el-form-item>
-          <el-form-item label="启用" prop="disabled">
-            <el-switch v-model="userInfo.enable" inline-prompt :active-value="1" :inactive-value="2" />
-          </el-form-item>
-        </el-form>
-
-      </div>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="closeAddUserDialog">取 消</el-button>
-          <el-button type="primary" @click="enterAddUserDialog">确 定</el-button>
-        </div>
-      </template>
-    </el-dialog> -->
-
     <div>
-      <!-- :open="open_drawer_rrset" -->
       <el-drawer v-model="drawer_rrset" direction="rtl" :before-close="handleClose" size="750" destroy-on-close>
         <template #header>
           <h4>配置记录</h4>
@@ -110,9 +56,6 @@
 
               <el-descriptions-item label="负载均衡" label-align="left"
                 v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME')">
-
-                <!-- <el-tag>{{ _lb }}</el-tag> -->
-
                 <el-tag :type="_lb === 1 ? 'success' : 'info'" disable-transitions>{{ _lb ==
                   1 ? '开启' : '关闭' }}</el-tag>
 
@@ -126,12 +69,10 @@
             <h5 class="title">基本信息</h5>
             <el-descriptions :column="1" border size="default">
               <el-descriptions-item label="域名" label-align="left" label-class-name="host-custom-label">
-                <!-- <el-tag class="wrap-tag">{{ _host }}.{{ _zone }}</el-tag> -->
-
 
                 <div class="mt-4">
-                  <el-input v-model="_host" style="max-width: 600px" placeholder="Please input">
-                    <template #append>.{{ _zone }}</template>
+                  <el-input v-model="_input_host" style="max-width: 600px" placeholder="Please input">
+                    <template #append>.{{ _input_zone }}</template>
                   </el-input>
                 </div>
 
@@ -141,7 +82,7 @@
               <el-descriptions-item label="记录类型" label-align="left">
 
                 <div class="mt-4">
-                  <el-select v-model="_rtyp" placeholder="Select" style="max-width: 600px">
+                  <el-select v-model="_input_rtyp" placeholder="Select" style="max-width: 600px">
                     <el-option label="A" value="A" />
                     <el-option label="AAAA" value="AAAA" />
                     <el-option label="CNAME" value="CNAME" />
@@ -157,8 +98,7 @@
 
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
-                <!-- <el-tag>{{ _view }}</el-tag> -->
-                <el-select v-model="_vid" placeholder="Select" filterable style="max-width: 600px">
+                <el-select v-model="_input_vid" placeholder="Select" filterable style="max-width: 600px">
                   <el-option-group v-for="group in _view_options" :key="group.label" :label="group.label">
                     <el-option v-for="item in group.options" :key="item.value" :label="item.label"
                       :value="item.value" />
@@ -168,9 +108,9 @@
               </el-descriptions-item>
 
               <el-descriptions-item label="负载均衡" label-align="left"
-                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME')">
+                v-if="(_input_rtyp === 'A' || _input_rtyp === 'AAAA' || _input_rtyp === 'CNAME')">
 
-                <el-radio-group v-model="_lb">
+                <el-radio-group v-model="_input_lb">
                   <el-radio :value="0">关闭</el-radio>
                   <el-radio :value="1">开启</el-radio>
                 </el-radio-group>
@@ -185,7 +125,7 @@
           <div class="card mb10" v-if="displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
-            <el-table :data="rrSet">
+            <el-table :data="_rrSet">
 
               <el-table-column align="left" label="记录值" min-width="200" prop="data" />
               <el-table-column align="left" label="权重" min-width="40" prop="wt"
@@ -207,9 +147,7 @@
           <div class="card mb10" v-if="!displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
-            <el-table :data="rrSet">
-
-              <!-- <el-table-column align="left" label="记录值" min-width="200" prop="data" /> -->
+            <el-table :data="_input_rrSet">
               <el-table-column align="left" label="记录值" min-width="200">
                 <template #default="scope">
                   <el-input size="default" placeholder="请输入内容" v-model="scope.row.data"></el-input>
@@ -217,7 +155,7 @@
               </el-table-column>
 
               <el-table-column align="left" label="权重" min-width="90"
-                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME') && _lb === 1">
+                v-if="(_input_rtyp === 'A' || _input_rtyp === 'AAAA' || _input_rtyp === 'CNAME') && _input_lb === 1">
                 <template #default="scope">
 
                   <el-input-number v-model="scope.row.wt" :min="0" :max="100" size="default" style="width: 80px;"
@@ -260,26 +198,8 @@
                 <template #default="scope">
                   <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1" />
 
-                  <!-- <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1"
-                    @change="() => { switchEnable(scope.row) }" /> -->
                 </template>
               </el-table-column>
-
-
-
-
-              <!-- <el-table-column align="left" label="vid" min-width="200" prop="vid" />
-              <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" /> -->
-
-              <!-- <el-table-column align="left" label="域名" min-width="200" prop="zone" /> -->
-              <!-- <el-table-column align="left" label="添加时间" min-width="180" prop="created_at" /> -->
-
-              <!-- <el-table-column align="left" label="启用" min-width="150">
-              <template #default="scope">
-                 <el-switch v-model="scope.row.enable" inline-prompt :active-value="1" :inactive-value="2"
-               @change="() => { switchEnable(scope.row) }" />
-                  </template>
-                 </el-table-column> -->
 
               <el-table-column label="操作" min-width="80" fixed="right">
                 <template #default="scope">
@@ -317,7 +237,7 @@
 import { getHostList, getRrset, postRrset } from '@/api/modules/host'
 
 import { nextTick, ref } from 'vue'
-import { ElMessage, ElMessageBox, ElDrawer, ElNotification } from 'element-plus'
+import { ElMessage, ElMessageBox, ElDrawer } from 'element-plus'
 
 import { Plus } from "@element-plus/icons-vue";
 // , CirclePlus, Delete, EditPen, Download, Upload
@@ -326,7 +246,9 @@ defineOptions({
 })
 
 
-let displayReadOnlyStat = ref(true);
+let refer_cancel = '';
+
+const displayReadOnlyStat = ref(true);
 
 // readonly
 const _host = ref('');
@@ -335,6 +257,7 @@ const _rtyp = ref('');
 const _lb = ref(0);
 const _vid = ref('');
 const _vtyp = ref('');
+const _rrSet = ref([]);
 
 // writeable
 const _input_host = ref('');
@@ -343,6 +266,7 @@ const _input_rtyp = ref('');
 const _input_lb = ref(0);
 const _input_vid = ref('');
 const _input_vtyp = ref('');
+const _input_rrSet = ref([]);
 
 const _view_options = [
   {
@@ -379,6 +303,17 @@ const _view_options = [
 
 const configRrSet = () => {
   console.log("configRrSet");
+
+  // writeable
+  _input_host.value = _host.value;
+  _input_zone.value = _zone.value;
+  _input_rtyp.value = _rtyp.value;
+  _input_lb.value = _lb.value;
+  _input_vid.value = _vid.value;
+  _input_vtyp.value = _vtyp.value;
+
+  _input_rrSet.value = _rrSet.value;
+
   displayReadOnlyStat.value = !displayReadOnlyStat.value;
 };
 
@@ -386,41 +321,27 @@ const addRrFunc = () => {
 
   console.log("---addRrFunc");
   // lb: 1, r_typ:"A",
-  rrSet.value.push({ data: "", stat: 0, ttl: 300, wt: 1 });
+  _rrSet.value.push({ data: "", stat: 0, ttl: 300, wt: 1 });
 
 };
 
 const drawer_rrset = ref(false)
 
-const rrSet = ref([]);
-
 const handleClose = () => {
   drawer_rrset.value = false;
   displayReadOnlyStat.value = true;
-
-  // router.push({ query: {} });
 };
 
-// const open_drawer_rrset = () => {
-//   console.log("open_drawer_rrset");
-// };
-
-// const handleClose = () => {
-//   ElMessageBox.confirm('Are you sure you want to close this?')
-//     .then(() => {
-//       done()
-//     })
-//     .catch(() => {
-//       // catch error
-//     })
-// }
-
 function cancelConfigRrSet() {
-  // drawer_rrset.value = false
 
-  bindRrsetData(_zone.value, _host.value, _rtyp.value, _vid.value, _vtyp.value);
+  if (refer_cancel == 'addRrSet') {
+    // 关闭抽屉
+    drawer_rrset.value = false;
+  } else {
+    // 显示只读页面
+    displayReadOnlyStat.value = true;
+  }
 
-  displayReadOnlyStat.value = true;
 }
 
 function postRrSet() {
@@ -428,31 +349,24 @@ function postRrSet() {
   console.log("host: ", _host.value, "; zone: ", _zone.value, "; r_typ: ", _rtyp.value, "; vid: ", _vid.value, "; v_typ: ", _vtyp.value, "; lb: ", _lb.value)
 
   let jsonData = {
-    host: _host.value,
-    rtyp: _rtyp.value,
-    vid: _vid.value,
-    vtyp: _vtyp.value,
-    lb: _lb.value,
+    host: _input_host.value,
+    rtyp: _input_rtyp.value,
+    vid: _input_vid.value,
+    vtyp: _input_vtyp.value,
+    lb: _input_lb.value,
     rr: []
   };
 
-  for (let inx = 0; inx < rrSet.value.length; inx++) {
-    jsonData.rr.push({ rdata: rrSet.value[inx].data, ttl: rrSet.value[inx].ttl, wt: rrSet.value[inx].wt, stat: rrSet.value[inx].stat });
+  for (let inx = 0; inx < _input_rrSet.value.length; inx++) {
+    jsonData.rr.push({ rdata: _input_rrSet.value[inx].data, ttl: _input_rrSet.value[inx].ttl, wt: _input_rrSet.value[inx].wt, stat: _input_rrSet.value[inx].stat });
   }
 
-  // userInfo.value = JSON.parse(JSON.stringify(row))
-
   console.log(JSON.stringify(jsonData, null, 2));
-
-
-  // console.log("-----rrSet.value.length: ", rrSet.value.length);s
-  // console.log("-----rrSet.value: ", rrSet.value);
 
   let jsonBody = {
     zone: _zone.value,
     data: [jsonData] // JSON.stringify(jsonData)
   };
-
 
   ElMessageBox.confirm(`确认提交吗?`)
     .then(async () => {
@@ -462,7 +376,6 @@ function postRrSet() {
 
       if (ret.errcode === 0) {
         // 执行成功后的逻辑
-        // displayReadOnlyStat.value = true;
 
         ElMessage({
           type: 'success',
@@ -471,26 +384,20 @@ function postRrSet() {
           message: "提交成功",
         });
 
-        // ElNotification({
-        //   title: 'Success',
-        //   message: 'This is a success message',
-        //   type: 'success',
-        // });
+        bindRrsetData(_input_zone.value, _input_host.value, _input_rtyp.value, _input_vid.value, _input_vtyp.value);
 
-        cancelConfigRrSet();
+        displayReadOnlyStat.value = true;
 
       }
 
     })
     .catch(() => {
       // catch error
+      console.log("postRrset unexpected error");
     })
 }
 
 // -----------------------------
-
-// const drawer2 = ref(false)
-// const direction = ref<DrawerProps['direction']>('rtl')
 
 const page = ref(1)
 const total = ref(0)
@@ -547,7 +454,7 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
 
     }
 
-    rrSet.value = ret.data.rrs;
+    _rrSet.value = ret.data.rrs;
   }
 }
 
@@ -561,25 +468,6 @@ const initPage = async () => {
   await bindHostData(route.params.zone, pageSize.value, 1)
 }
 
-initPage()
-
-// const resetPasswordFunc = (row) => {
-//   ElMessageBox.confirm(
-//     '是否将此用户密码重置为123456?',
-//     '警告',
-//     {
-//       confirmButtonText: '确定',
-//       cancelButtonText: '取消',
-//       type: 'warning',
-//     }
-//   ).then(async () => {
-//     ElMessage({
-//       type: 'success',
-//       message: "重置密码成功",
-//     })
-//   })
-// }
-
 const delRrFn = async (row, inx) => {
   ElMessageBox.confirm('确定要删除该记录吗?', '提示', {
     confirmButtonText: '确定',
@@ -587,86 +475,44 @@ const delRrFn = async (row, inx) => {
     type: 'warning'
   }).then(async () => {
 
-    rrSet.value.splice(inx, 1);
+    _rrSet.value.splice(inx, 1);
 
   })
 }
 
-// const deleteUserFunc = async (row) => {
-//   ElMessageBox.confirm('确定要删除吗?', '提示', {
-//     confirmButtonText: '确定',
-//     cancelButtonText: '取消',
-//     type: 'warning'
-//   }).then(async () => {
+const addRrSet = () => {
 
-//     rrSet.value.splice(row.index, 1);
+  refer_cancel = 'addRrSet';
 
-//     ElMessage.success('删除成功')
-//     await bindHostData()
+  _input_host.value = "";
+  _input_zone.value = route.params.zone;
+  _input_rtyp.value = "A";
+  _input_lb.value = 0;
+  _input_vid.value = 1;
+  _input_vtyp.value = 1;
 
-//   })
-// }
+  _input_rrSet.value = [];
 
-// // 弹窗相关
-// const userInfo = ref({
-//   username: '',
-//   password: '',
-//   nickName: '',
-//   enable: 1,
-// })
+  displayReadOnlyStat.value = false;
 
-// const rules = ref({
-//   userName: [
-//     { required: true, message: '请输入用户名', trigger: 'blur' },
-//     { min: 5, message: '最低5位字符', trigger: 'blur' }
-//   ],
-//   password: [
-//     { required: true, message: '请输入用户密码', trigger: 'blur' },
-//     { min: 6, message: '最低6位字符', trigger: 'blur' }
-//   ],
-//   nickName: [
-//     { required: true, message: '请输入用户昵称', trigger: 'blur' }
-//   ],
-//   phone: [
-//     { pattern: /^1([38][0-9]|4[014-9]|[59][0-35-9]|6[2567]|7[0-8])\d{8}$/, message: '请输入合法手机号', trigger: 'blur' },
-//   ],
-//   email: [
-//     { pattern: /^([0-9A-Za-z\-_.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: '请输入正确的邮箱', trigger: 'blur' },
-//   ],
-// })
-// const userForm = ref(null)
-// const enterAddUserDialog = async () => {
-//   userForm.value.validate(async valid => {
-//     if (valid) {
-//       const req = {
-//         ...userInfo.value
-//       }
-//       if (dialogFlag.value === 'add') {
-//         const res = await register(req)
-//         if (res.code === 0) {
-//           ElMessage({ type: 'success', message: '创建成功' })
-//           await bindHostData()
-//           closeAddUserDialog()
-//         }
-//       }
-//       if (dialogFlag.value === 'edit') {
-//         if (res.code === 0) {
-//           ElMessage({ type: 'success', message: '编辑成功' })
-//           await bindHostData()
-//           closeAddUserDialog()
-//         }
-//       }
-//     }
-//   })
-// }
+  drawer_rrset.value = true;
 
-// const addUserDialog = ref(false)
-// const closeAddUserDialog = () => {
-//   userForm.value.resetFields()
-//   addUserDialog.value = false
-// }
+};
 
-// const dialogFlag = ref('add')
+const manageRrSet = (row) => {
+
+  refer_cancel = 'manageRrSet';
+
+  let ret = row;
+
+  console.log("open drawer");
+
+  bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
+
+  drawer_rrset.value = true;
+}
+
+initPage();
 
 // const addUser = () => {
 //   dialogFlag.value = 'add';
@@ -684,46 +530,8 @@ const delRrFn = async (row, inx) => {
 //   console.log(t3);
 // }
 
-const addRrSet = () => {
-
-  drawer_rrset.value = true;
-
-  displayReadOnlyStat.value = false;
-
-
-  _rtyp.value = "A";
-  _lb.value = 0;
-
-  _host.value = "";
-  _zone.value = route.params.zone;
-  _vid.value = 1;
-  _vtyp.value = 1;
-
-  rrSet.value = [];
-};
-
-
-const manageRrSet = (row) => {
-
-  let ret = row;
-
-  console.log("open drawer");
-
-  bindRrsetData(ret.zone, ret.host, ret.r_typ, ret.vid, ret.v_typ);
-
-  drawer_rrset.value = true;
-}
-
-// const switchEnable = async (row) => {
-//   userInfo.value = JSON.parse(JSON.stringify(row))
-//   await nextTick()
-//   const req = {
-//     ...userInfo.value
-//   }
-//   ElMessage({ type: 'success', message: `${req.enable === 2 ? '禁用' : '启用'}成功` })
-// }
-
 </script>
+
 
 
 <style scoped>
