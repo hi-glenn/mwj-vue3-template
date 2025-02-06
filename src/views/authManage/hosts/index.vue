@@ -121,7 +121,7 @@
           </div>
 
 
-
+          <!-- readonly -->
           <div class="card mb10" v-if="displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
@@ -144,6 +144,7 @@
           </div>
 
 
+          <!-- writeable -->
           <div class="card mb10" v-if="!displayReadOnlyStat">
             <h5 class="title">记录信息</h5>
 
@@ -193,7 +194,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column align="left" label="状态" min-width="50" prop="stat">
+              <el-table-column align="left" label="状态" min-width="50">
 
                 <template #default="scope">
                   <el-switch v-model="scope.row.stat" inline-prompt :active-value="0" :inactive-value="1" />
@@ -312,7 +313,7 @@ const configRrSet = () => {
   _input_vid.value = _vid.value;
   _input_vtyp.value = _vtyp.value;
 
-  _input_rrSet.value = _rrSet.value;
+  _input_rrSet.value = JSON.parse(JSON.stringify(_rrSet.value));
 
   displayReadOnlyStat.value = !displayReadOnlyStat.value;
 };
@@ -386,8 +387,15 @@ function postRrSet() {
 
         bindRrsetData(_input_zone.value, _input_host.value, _input_rtyp.value, _input_vid.value, _input_vtyp.value);
 
-        displayReadOnlyStat.value = true;
+        if (_rrSet.value.length == 0) {
+          // 若删除了整个 rrset，则关闭抽屉
+          drawer_rrset.value = false;
+        } else {
+          // 展示只读状态的抽屉
+          displayReadOnlyStat.value = true;
+        }
 
+        initPage();
       }
 
     })
@@ -465,7 +473,7 @@ const route = useRoute();
 const initPage = async () => {
   // console.log("pageSize.value: ", pageSize.value);
 
-  await bindHostData(route.params.zone, pageSize.value, 1)
+  await bindHostData(route.params.zone, pageSize.value, page.value)
 }
 
 const delRrFn = async (row, inx) => {
@@ -475,7 +483,7 @@ const delRrFn = async (row, inx) => {
     type: 'warning'
   }).then(async () => {
 
-    _rrSet.value.splice(inx, 1);
+    _input_rrSet.value.splice(inx, 1);
 
   })
 }
