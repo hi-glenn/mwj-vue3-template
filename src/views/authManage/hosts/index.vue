@@ -100,7 +100,7 @@
                   class="wrap-tag">hellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdahellofsafsdfdsagdsagsdfsdafsdafsdafasdgdsagasdgsadgsadgagagasgagagaggagagsggagagsagagasgasgasgsgagasdgsgsdgagdaddsddsddsdsgdsgsdggfgdfggfgdfgdfgd</el-tag> -->
               </el-descriptions-item>
               <el-descriptions-item label="记录类型" label-align="left">
-                <el-tag>{{ _r_typ }}</el-tag>
+                <el-tag>{{ _rtyp }}</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
                 <!-- <el-tag>{{ _vid }}</el-tag> -->
@@ -109,7 +109,7 @@
               </el-descriptions-item>
 
               <el-descriptions-item label="负载均衡" label-align="left"
-                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
+                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME')">
 
                 <!-- <el-tag>{{ _lb }}</el-tag> -->
 
@@ -141,7 +141,7 @@
               <el-descriptions-item label="记录类型" label-align="left">
 
                 <div class="mt-4">
-                  <el-select v-model="_r_typ" placeholder="Select" style="max-width: 600px">
+                  <el-select v-model="_rtyp" placeholder="Select" style="max-width: 600px">
                     <el-option label="A" value="A" />
                     <el-option label="AAAA" value="AAAA" />
                     <el-option label="CNAME" value="CNAME" />
@@ -158,7 +158,7 @@
               </el-descriptions-item>
               <el-descriptions-item label="线路" label-align="left">
                 <!-- <el-tag>{{ _view }}</el-tag> -->
-                <el-select v-model="_view_val" placeholder="Select" filterable style="max-width: 600px">
+                <el-select v-model="_vid" placeholder="Select" filterable style="max-width: 600px">
                   <el-option-group v-for="group in _view_options" :key="group.label" :label="group.label">
                     <el-option v-for="item in group.options" :key="item.value" :label="item.label"
                       :value="item.value" />
@@ -168,7 +168,7 @@
               </el-descriptions-item>
 
               <el-descriptions-item label="负载均衡" label-align="left"
-                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME')">
+                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME')">
 
                 <el-radio-group v-model="_lb">
                   <el-radio :value="0">关闭</el-radio>
@@ -189,7 +189,7 @@
 
               <el-table-column align="left" label="记录值" min-width="200" prop="data" />
               <el-table-column align="left" label="权重" min-width="40" prop="wt"
-                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1" />
+                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME') && _lb === 1" />
               <el-table-column align="left" label="TTL" min-width="50" prop="ttl" />
 
               <el-table-column align="left" label="状态" min-width="40">
@@ -217,7 +217,7 @@
               </el-table-column>
 
               <el-table-column align="left" label="权重" min-width="90"
-                v-if="(_r_typ === 'A' || _r_typ === 'AAAA' || _r_typ === 'CNAME') && _lb === 1">
+                v-if="(_rtyp === 'A' || _rtyp === 'AAAA' || _rtyp === 'CNAME') && _lb === 1">
                 <template #default="scope">
 
                   <el-input-number v-model="scope.row.wt" :min="0" :max="100" size="default" style="width: 80px;"
@@ -330,16 +330,23 @@ let displayReadOnlyStat = ref(true);
 
 // const _host_input = ref('');
 
-const _r_typ = ref('');
+// readonly
+const _rtyp = ref('');
 const _host = ref('');
 const _zone = ref('');
-
 const _vid = ref('');
-const _v_typ = ref('');
-
+const _vtyp = ref('');
 const _lb = ref(0);
 
-const _view_val = ref('');
+// writeable
+// const _r_typ = ref('');
+// const _host = ref('');
+// const _zone = ref('');
+// const _vid = ref('');
+// const _v_typ = ref('');
+// const _lb = ref(0);
+
+
 const _view_options = [
   {
     label: '默认线路',
@@ -414,20 +421,20 @@ const handleClose = () => {
 function cancelConfigRrSet() {
   // drawer_rrset.value = false
 
-  bindRrsetData(_zone.value, _host.value, _r_typ.value, _vid.value, _v_typ.value);
+  bindRrsetData(_zone.value, _host.value, _rtyp.value, _vid.value, _vtyp.value);
 
   displayReadOnlyStat.value = true;
 }
 
 function postRrSet() {
 
-  console.log("host: ", _host.value, "; zone: ", _zone.value, "; r_typ: ", _r_typ.value, "; vid: ", _vid.value, "; v_typ: ", _v_typ.value, "; lb: ", _lb.value)
+  console.log("host: ", _host.value, "; zone: ", _zone.value, "; r_typ: ", _rtyp.value, "; vid: ", _vid.value, "; v_typ: ", _vtyp.value, "; lb: ", _lb.value)
 
   let jsonData = {
     host: _host.value,
-    rtyp: _r_typ.value,
+    rtyp: _rtyp.value,
     vid: _vid.value,
-    vtyp: _v_typ.value,
+    vtyp: _vtyp.value,
     lb: _lb.value,
     rr: []
   };
@@ -533,13 +540,13 @@ const bindRrsetData = async (zone, host, r_typ, vid, v_typ) => {
   if (ret.errcode == 0) {
     if (ret.data.rrs.length > 0) {
 
-      _r_typ.value = ret.data.rrs[0].r_typ;
+      _rtyp.value = ret.data.rrs[0].r_typ;
       _lb.value = ret.data.rrs[0].lb;
 
       _host.value = host;
       _zone.value = zone;
       _vid.value = vid;
-      _v_typ.value = v_typ;
+      _vtyp.value = v_typ;
 
     }
 
@@ -687,13 +694,13 @@ const addRrSet = () => {
   displayReadOnlyStat.value = false;
 
 
-  _r_typ.value = "A";
+  _rtyp.value = "A";
   _lb.value = 0;
 
   _host.value = "";
   _zone.value = route.params.zone;
   _vid.value = 1;
-  _v_typ.value = 1;
+  _vtyp.value = 1;
 
   rrSet.value = [];
 };
