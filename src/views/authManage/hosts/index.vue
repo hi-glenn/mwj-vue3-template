@@ -328,24 +328,21 @@ defineOptions({
 
 let displayReadOnlyStat = ref(true);
 
-// const _host_input = ref('');
-
 // readonly
-const _rtyp = ref('');
 const _host = ref('');
 const _zone = ref('');
+const _rtyp = ref('');
+const _lb = ref(0);
 const _vid = ref('');
 const _vtyp = ref('');
-const _lb = ref(0);
 
 // writeable
-// const _r_typ = ref('');
-// const _host = ref('');
-// const _zone = ref('');
-// const _vid = ref('');
-// const _v_typ = ref('');
-// const _lb = ref(0);
-
+const _input_host = ref('');
+const _input_zone = ref('');
+const _input_rtyp = ref('');
+const _input_lb = ref(0);
+const _input_vid = ref('');
+const _input_vtyp = ref('');
 
 const _view_options = [
   {
