@@ -9,8 +9,28 @@
 
         <el-table-column align="left" label="主机记录" min-width="200" prop="host" />
         <el-table-column align="left" label="记录类型" min-width="200" prop="r_typ" />
-        <el-table-column align="left" label="vid" min-width="200" prop="vid" />
-        <el-table-column align="left" label="v_typ" min-width="200" prop="v_typ" />
+        <!-- <el-table-column align="left" label="线路" min-width="200" prop="vid" /> -->
+
+        <el-table-column align="left" label="线路" min-width="200">
+          <template #default="scope">
+            <el-tag :type="scope.row.vid === 1 ? 'primary' : 'warning'">{{ scope.row.vid ==
+              1 ? '默认' : '未知' }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="left" label="线路类型" min-width="200">
+          <template #default="scope">
+            <el-tag :type="scope.row.v_typ === 1 ? 'primary' : 'warning'">{{ scope.row.v_typ ==
+              1 ? '一级线路' : '未知' }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="left" label="最后操作时间" min-width="200" prop="vid" />
+
+        <!-- <el-table-column align="left" label="线路类型" min-width="200" prop="v_typ">
+          <el-tag :type="v_typ === 1 ? 'primary' : 'warning'">{{ v_typ ==
+            1 ? '默认' : '未知' }}</el-tag>
+        </el-table-column> -->
 
         <el-table-column label="操作" min-width="150" fixed="right">
           <template #default="scope">
